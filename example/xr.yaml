@@ -5,7 +5,6 @@ metadata:
 spec:
   region: us-east-2
   names:
-  - crossplane-functions-example-a
-  - crossplane-functions-example-b
-  - crossplane-functions-example-c
-
+    - crossplane-functions-example-a
+    - crossplane-functions-example-b
+    - crossplane-functions-example-c
