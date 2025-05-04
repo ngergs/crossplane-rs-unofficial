@@ -1,0 +1,3 @@
+[submodule "proto/crossplane"]
+	path = proto/crossplane
+	url = git@github.com:crossplane/crossplane.git
