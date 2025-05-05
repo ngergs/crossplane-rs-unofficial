@@ -1,8 +1,12 @@
 use crate::crossplane::function_runner_service_server::FunctionRunnerService;
 use crate::crossplane::{Resource, ResponseMeta, RunFunctionRequest, RunFunctionResponse};
-use prost_types::value::Kind::{StringValue, StructValue};
-use prost_types::{Duration, Struct, Value};
-use std::collections::BTreeMap;
+use crate::output::S3BucketCrossplaneApiVersion::S3AwsUpboundIoV1beta1;
+use crate::output::S3BucketCrossplaneKind::Bucket;
+use crate::output::{
+    S3BucketCrossplane, S3BucketCrossplaneMetadata, S3BucketCrossplaneSpec,
+    S3BucketCrossplaneSpecForProvider,
+};
+use prost_types::Duration;
 use tonic::{Request, Response, Status};
 
 pub mod crossplane {
@@ -30,24 +34,26 @@ impl FunctionRunnerService for ExampleFunction {
         let request = request.into_inner();
 
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
+        let bucket = S3BucketCrossplane {
+            api_version: S3AwsUpboundIoV1beta1,
+            kind: Bucket,
+            metadata: S3BucketCrossplaneMetadata {
+                generate_name: "test".to_string(),
+                annotations: Default::default(),
+                labels: Default::default(),
+            },
+            spec: S3BucketCrossplaneSpec {
+                for_provider: S3BucketCrossplaneSpecForProvider {
+                    region: "test".to_string(),
+                },
+            },
+        };
+        let val = serde_json::to_value(&bucket).map_err(|e| Status::internal(e.to_string()))?;
+        let fields = serde_json::from_value(val).map_err(|e| Status::internal(e.to_string()))?;
         desired.resources.insert(
             "test-bucket".to_owned(),
             Resource {
-                resource: Some(Struct {
-                    fields: BTreeMap::from([(
-                        "metadata".to_owned(),
-                        Value {
-                            kind: Some(StructValue(Struct {
-                                fields: BTreeMap::from([(
-                                    "name".to_owned(),
-                                    Value {
-                                        kind: Some(StringValue("test".to_owned())),
-                                    },
-                                )]),
-                            })),
-                        },
-                    )]),
-                }),
+                resource: Some(fields),
                 ..Default::default()
             },
         );
