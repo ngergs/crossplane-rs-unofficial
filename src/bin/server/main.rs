@@ -1,6 +1,6 @@
 use clap::Parser;
 use crossplane_rust_example::crossplane::function_runner_service_server::FunctionRunnerServiceServer;
-use crossplane_rust_example::ExampleFunction;
+use crossplane_rust_example::function::ExampleFunction;
 use std::path::Path;
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
 
