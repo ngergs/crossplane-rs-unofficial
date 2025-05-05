@@ -17,21 +17,12 @@
         "annotations": {
           "type": "object",
           "properties": {
-            "crossplane.io/composition-resource-name": { "type": "string" },
             "crossplane.io/external-name": { "type": "string" }
-          },
-          "additionalProperties": true
-        },
-        "generateName": { "type": "string" },
-        "labels": {
-          "type": "object",
-          "properties": {
-            "crossplane.io/composite": { "type": "string" }
           },
           "additionalProperties": true
         }
       },
-      "required": ["generateName", "annotations", "labels"]
+      "required": ["annotations"]
     },
     "spec": {
       "type": "object",
