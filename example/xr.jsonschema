@@ -1,25 +1,6 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "XBuckets",
   "type": "object",
   "properties": {
-    "apiVersion": {
-      "type": "string",
-      "enum": ["example.crossplane.io/v1"]
-    },
-    "kind": {
-      "type": "string",
-      "enum": ["XBuckets"]
-    },
-    "metadata": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": ["name"]
-    },
     "spec": {
       "type": "object",
       "properties": {
@@ -30,12 +11,20 @@
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "minItems": 1
+          }
+        },
+        "name": {
+          "type": "string"
         }
       },
-      "required": ["region", "names"]
+      "required": [
+        "region",
+        "names"
+      ]
     }
   },
-  "required": ["apiVersion", "kind", "metadata", "spec"]
+  "required": [
+    "spec"
+  ],
+  "title": "XBuckets"
 }

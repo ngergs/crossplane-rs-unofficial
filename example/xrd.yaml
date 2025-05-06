@@ -1,0 +1,31 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xbuckets.ngergs.de
+spec:
+  group: ngergs.de
+  names:
+    kind: XBucket
+    plural: xbuckets
+  versions:
+    - name: v1alpha1
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                region:
+                  type: string
+                names:
+                  type: array
+                  items:
+                    type: string
+                name:
+                  type: string
+              required:
+                - region
+                - names
+          required:
+            - spec
