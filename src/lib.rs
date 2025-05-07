@@ -1,5 +1,6 @@
 pub mod function;
 
+#[allow(clippy::all, clippy::pedantic, clippy::nursery)]
 pub mod crossplane {
     include!("apiextensions.r#fn.proto.v1.rs");
 }
@@ -10,7 +11,7 @@ pub mod composite_resource {
 
     typify::import_types!(schema = "example/xr.jsonschema");
 
-    impl TryFrom<Option<Resource>> for XBuckets {
+    impl TryFrom<Option<Resource>> for XConfig {
         type Error = Error;
 
         fn try_from(value: Option<Resource>) -> Result<Self, Self::Error> {
@@ -26,14 +27,13 @@ pub mod composite_resource {
 
 pub mod output {
     use crate::crossplane::Resource;
+    use k8s_openapi::api::core::v1::ConfigMap;
     use std::io::Error;
 
-    typify::import_types!(schema = "example/bucket.jsonschema");
-
-    impl TryFrom<S3BucketCrossplane> for Resource {
+    impl TryFrom<ConfigMap> for Resource {
         type Error = Error;
 
-        fn try_from(value: S3BucketCrossplane) -> Result<Self, Self::Error> {
+        fn try_from(value: ConfigMap) -> Result<Self, Self::Error> {
             let value = serde_json::to_value(&value)?;
             let fields = serde_json::from_value(value)?;
             Ok(Resource {

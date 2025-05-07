@@ -1,13 +1,10 @@
-use crate::composite_resource::XBuckets;
+use crate::composite_resource::XConfig;
 use crate::crossplane::function_runner_service_server::FunctionRunnerService;
 use crate::crossplane::{ResponseMeta, RunFunctionRequest, RunFunctionResponse};
-use crate::output::S3BucketCrossplaneApiVersion::S3AwsUpboundIoV1beta1;
-use crate::output::S3BucketCrossplaneKind::Bucket;
-use crate::output::{
-    S3BucketCrossplane, S3BucketCrossplaneMetadata, S3BucketCrossplaneMetadataAnnotations,
-    S3BucketCrossplaneSpec, S3BucketCrossplaneSpecForProvider,
-};
+use k8s_openapi::api::core::v1::ConfigMap;
+use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use prost_types::Duration;
+use std::collections::BTreeMap;
 use std::io::{Error, ErrorKind};
 use tonic::{Request, Response, Status};
 
@@ -21,7 +18,7 @@ impl FunctionRunnerService for ExampleFunction {
     ) -> Result<Response<RunFunctionResponse>, Status> {
         println!("RunFunction request: {:?}", request);
         let request = request.into_inner();
-        let xbucket: XBuckets = request
+        let xconfig: XConfig = request
             .observed
             .ok_or(Error::new(
                 ErrorKind::InvalidData,
@@ -31,32 +28,31 @@ impl FunctionRunnerService for ExampleFunction {
             .try_into()?;
 
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
-        for name in xbucket.spec.names.into_iter() {
-            let bucket = S3BucketCrossplane {
-                api_version: S3AwsUpboundIoV1beta1,
-                kind: Bucket,
-                metadata: S3BucketCrossplaneMetadata {
-                    annotations: S3BucketCrossplaneMetadataAnnotations {
-                        crossplane_io_external_name: Some(name.clone()),
-                    },
+        for value_set in xconfig.spec.value_sets {
+            let mut value = xconfig.spec.template.clone();
+            for (k, v) in &value_set.values {
+                value = value.replace(&format!("{{{k}}}"), v);
+            }
+            let conf = ConfigMap {
+                metadata: ObjectMeta {
+                    annotations: Some(BTreeMap::from([(
+                        "crossplane.io/external-name".to_owned(),
+                        value_set.name.clone(),
+                    )])),
+                    ..Default::default()
                 },
-                spec: S3BucketCrossplaneSpec {
-                    for_provider: S3BucketCrossplaneSpecForProvider {
-                        region: xbucket.spec.region.clone(),
-                    },
-                },
+                data: Some(BTreeMap::from([("value".to_owned(), value)])),
+                ..Default::default()
             };
-            desired.resources.insert(name, bucket.try_into()?);
+            desired.resources.insert(value_set.name, conf.try_into()?);
         }
         let result = RunFunctionResponse {
-            meta: request.meta.and_then(|meta| {
-                Some(ResponseMeta {
-                    tag: meta.tag, // required by the spec to copy this from the request without modification
-                    ttl: Some(Duration {
-                        seconds: 60,
-                        nanos: 0,
-                    }), // time the result can be cached. SHOULD be set.
-                })
+            meta: request.meta.map(|meta| ResponseMeta {
+                tag: meta.tag, // required by the spec to copy this from the request without modification
+                ttl: Some(Duration {
+                    seconds: 60,
+                    nanos: 0,
+                }), // time the result can be cached. SHOULD be set.
             }),
             desired: Some(desired),
             context: request.context,

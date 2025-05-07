@@ -4,7 +4,7 @@ use crossplane_rust_example::function::ExampleFunction;
 use std::path::Path;
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
 
-/// CLI arguments as required by the spec, https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md
+/// CLI arguments as required by the spec, <https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md>
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
