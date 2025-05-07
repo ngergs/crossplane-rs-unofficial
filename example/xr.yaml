@@ -3,7 +3,7 @@ kind: XConfig
 metadata:
   name: example-configs
 spec:
-  template: Hello {world}, it's a {timeOfDay}
+  template: Hello {world}, it's {timeOfDay}
   valueSets:
     - name: morning
       values:
