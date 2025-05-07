@@ -1,12 +1,12 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xbuckets.ngergs.de
+  name: xconfigs.ngergs.de
 spec:
   group: ngergs.de
   names:
-    kind: XBucket
-    plural: xbuckets
+    kind: XConfig
+    plural: xconfigs
   versions:
     - name: v1alpha1
       schema:
@@ -16,16 +16,24 @@ spec:
             spec:
               type: object
               properties:
-                region:
+                template:
                   type: string
-                names:
+                valueSets:
                   type: array
                   items:
-                    type: string
-                name:
-                  type: string
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      values:
+                        type: object
+                        additionalProperties:
+                          type: string
+                    required:
+                      - name
+                      - values
               required:
-                - region
-                - names
+                - template
+                - valueSets
           required:
             - spec

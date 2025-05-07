@@ -4,27 +4,39 @@
     "spec": {
       "type": "object",
       "properties": {
-        "region": {
+        "template": {
           "type": "string"
         },
-        "names": {
+        "valueSets": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "values": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "values"
+            ]
           }
-        },
-        "name": {
-          "type": "string"
         }
       },
       "required": [
-        "region",
-        "names"
+        "template",
+        "valueSets"
       ]
     }
   },
   "required": [
     "spec"
   ],
-  "title": "XBuckets"
+  "title": "XConfig"
 }

@@ -1,10 +1,15 @@
 apiVersion: example.crossplane.io/v1
-kind: XBuckets
+kind: XConfig
 metadata:
-  name: example-buckets
+  name: example-configs
 spec:
-  region: us-east-2
-  names:
-    - crossplane-functions-example-a
-    - crossplane-functions-example-b
-    - crossplane-functions-example-c
+  template: Hello {world}, it's a {timeOfDay}
+  valueSets:
+    - name: morning
+      values:
+        world: world
+        timeOfDay: morning
+    - name: evening
+      values:
+        world: world
+        timeOfDay: evening
