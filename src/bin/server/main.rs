@@ -2,6 +2,7 @@ use clap::Parser;
 use crossplane_rust_example::crossplane::function_runner_service_server::FunctionRunnerServiceServer;
 use crossplane_rust_example::function::ExampleFunction;
 use std::path::Path;
+use tokio::signal::unix::{signal, SignalKind};
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
 
 /// CLI arguments as required by the spec, <https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md>
@@ -35,7 +36,7 @@ fn cert_from_dir(
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    let addr = "[::1]:9443".parse().unwrap();
+    let addr = "0.0.0.0:9443".parse().unwrap();
     let mut srv = Server::builder();
     if !args.insecure {
         let ca = cert_from_dir(args.tls_certs_dir.as_str(), "ca.crt")?;
@@ -47,8 +48,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             .identity(Identity::from_pem(cert, key));
         srv = srv.tls_config(tls_conf)?;
     }
+    let mut sigterm = signal(SignalKind::terminate())?;
+    let mut sigint = signal(SignalKind::interrupt())?;
     srv.add_service(FunctionRunnerServiceServer::new(ExampleFunction {}))
-        .serve(addr)
+        .serve_with_shutdown(addr, async {
+            tokio::select! {
+                _ = sigterm.recv() => (),
+                _ = sigint.recv() => (),
+            }
+        })
         .await?;
     Ok(())
 }

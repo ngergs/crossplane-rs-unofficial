@@ -1,0 +1,10 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Function
+metadata:
+  name: config-ngergs-de
+  annotations:
+    # to let minikube pick up our local image
+    render.crossplane.io/runtime-docker-pull-policy: Never
+spec:
+  # todo: fill in minikube ip
+  package: 192.168.49.2:5000/crossplane-rust-config:v4

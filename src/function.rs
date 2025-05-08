@@ -26,7 +26,6 @@ impl FunctionRunnerService for ExampleFunction {
             ))?
             .composite
             .try_into()?;
-
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
         for value_set in xconfig.spec.value_sets {
             let mut value = xconfig.spec.template.clone();
@@ -35,6 +34,7 @@ impl FunctionRunnerService for ExampleFunction {
             }
             let conf = ConfigMap {
                 metadata: ObjectMeta {
+                    namespace:
                     annotations: Some(BTreeMap::from([(
                         "crossplane.io/external-name".to_owned(),
                         value_set.name.clone(),

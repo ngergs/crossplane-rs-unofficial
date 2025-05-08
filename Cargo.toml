@@ -8,7 +8,7 @@ pedantic = "warn"
 
 [dependencies]
 tonic = { version = "0.13.0", features = ["tls-aws-lc"] }
-tokio = { version = "1.44.2", features = ["rt-multi-thread"] }
+tokio = { version = "1.44.2", features = ["rt-multi-thread", "signal"] }
 prost = "0.13.5"
 prost-types = "0.13.5"
 clap = { version = "4.5.37", features = ["derive", "env"] }

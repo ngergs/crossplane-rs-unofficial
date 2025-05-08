@@ -1,13 +1,13 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: create-configs
+  name: xconfigs.ngergs.de
 spec:
   compositeTypeRef:
-    apiVersion: example.crossplane.io/v1
+    apiVersion: ngergs.de/v1alpha1
     kind: XConfig
   mode: Pipeline
   pipeline:
     - step: create-config
       functionRef:
-        name: function-xconfigs
+        name: config-ngergs-de

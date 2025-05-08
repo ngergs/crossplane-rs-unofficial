@@ -1,10 +1,11 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
-  name: function-xconfigs
+  name: config-ngergs-de
   annotations:
     render.crossplane.io/runtime: Development
 spec:
   # The CLI ignores this package when using the Development runtime.
   # You can set it to any value.
   package: xconfigs
+

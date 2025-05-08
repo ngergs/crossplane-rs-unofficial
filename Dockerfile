@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/ap
 RUN cargo install --path .
 
 # rust builder image also uses debian 12 so same glibc version
-FROM gcr.io/distroless/cc-debian12
+FROM gcr.io/distroless/cc-debian12:nonroot
 COPY --from=builder /usr/local/cargo/bin/server /usr/local/bin/server
+EXPOSE 9443
 ENTRYPOINT ["/usr/local/bin/server"]
