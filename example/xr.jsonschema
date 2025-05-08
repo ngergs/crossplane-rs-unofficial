@@ -27,6 +27,29 @@
               "values"
             ]
           }
+        },
+        "claimRef": {
+          "type": "object",
+          "properties": {
+            "apiVersion": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "namespace": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "apiVersion",
+            "kind",
+            "name",
+            "namespace"
+          ]
         }
       },
       "required": [

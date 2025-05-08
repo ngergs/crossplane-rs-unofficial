@@ -7,4 +7,4 @@ metadata:
     render.crossplane.io/runtime-docker-pull-policy: Never
 spec:
   # todo: fill in minikube ip
-  package: 192.168.49.2:5000/crossplane-rust-config:v4
+  package: 192.168.49.2:5000/crossplane-rust-config:latest

@@ -17,7 +17,7 @@ crossplane render xr.yaml composition.yaml function.yaml
 The `xr.jsonschema` can be obtained from the `xrd.yaml` via [mikefarah yq v4](https://github.com/mikefarah/yq):
 
 ```bash
-yq '.spec.versions[0].schema.openAPIV3Schema | .title="XConfig"' xrd.yaml -o json > xr.jsonschema
+yq '.spec.versions[0].schema.openAPIV3Schema | .title="XConfig" | . *= load("claimRef.yaml")' xrd.yaml -o json > xr.jsonschema
 ```
 
 ## Minikube example
@@ -31,5 +31,5 @@ kustomize build --enable-helm | kubectl apply --context minikube -f -
 docker build -t crossplane-rust-config-fn ..
 crossplane xpkg build --package-root=package --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
 crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config:latest
-minikube image load $(minikube ip):5000/crossplane-rust-config:v2
+minikube image load $(minikube ip):5000/crossplane-rust-config:latest
 ```

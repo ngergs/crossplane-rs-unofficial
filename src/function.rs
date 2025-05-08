@@ -34,7 +34,8 @@ impl FunctionRunnerService for ExampleFunction {
             }
             let conf = ConfigMap {
                 metadata: ObjectMeta {
-                    namespace:
+                    // not possible? https://github.com/crossplane/crossplane/issues/1730
+                    namespace: xconfig.spec.claim_ref.clone().map(|c| c.namespace),
                     annotations: Some(BTreeMap::from([(
                         "crossplane.io/external-name".to_owned(),
                         value_set.name.clone(),
