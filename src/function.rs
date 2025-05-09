@@ -35,11 +35,8 @@ impl FunctionRunnerService for ExampleFunction {
             let conf = ConfigMap {
                 metadata: ObjectMeta {
                     // not possible? https://github.com/crossplane/crossplane/issues/1730
+                    name: Some(value_set.name.clone()),
                     namespace: xconfig.spec.claim_ref.clone().map(|c| c.namespace),
-                    annotations: Some(BTreeMap::from([(
-                        "crossplane.io/external-name".to_owned(),
-                        value_set.name.clone(),
-                    )])),
                     ..Default::default()
                 },
                 data: Some(BTreeMap::from([("value".to_owned(), value)])),

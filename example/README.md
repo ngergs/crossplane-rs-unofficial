@@ -25,11 +25,13 @@ yq '.spec.versions[0].schema.openAPIV3Schema | .title="XConfig" | . *= load("cla
 To run this example execute the following steps:
 
 ```bash
-minikube up
+minikube start
 minikube addons enable registry
-kustomize build --enable-helm | kubectl apply --context minikube -f -
+kustomize build crossplane --enable-helm | kubectl apply --context minikube -f -
+kustomize build crossplane-providers --enable-helm | kubectl apply --context minikube -f -
 docker build -t crossplane-rust-config-fn ..
 crossplane xpkg build --package-root=package --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
 crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config:latest
-minikube image load $(minikube ip):5000/crossplane-rust-config:latest
+minikube image load $(minikube ip):5000/crossplane-rust-config:latest --pull=true
+kustomize build . --enable-helm | kubectl apply --context minikube -f -
 ```

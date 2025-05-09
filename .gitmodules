@@ -1,3 +1,6 @@
-[submodule "proto/crossplane"]
-	path = proto/crossplane
+[submodule "schema/crossplane"]
+	path = schema/crossplane
 	url = git@github.com:crossplane/crossplane.git
+[submodule "schema/provider-kubernetes"]
+	path = schema/provider-kubernetes
+	url = git@github.com:crossplane-contrib/provider-kubernetes.git
