@@ -28,6 +28,7 @@ pub mod composite_resource {
 pub mod output {
     use crate::crossplane::Resource;
     use k8s_openapi::api::core::v1::ConfigMap;
+    use serde_json::Map;
     use std::io::{Error, ErrorKind};
 
     typify::import_types!(schema = "schema/kubernetes_object.jsonschema");
@@ -46,10 +47,22 @@ pub mod output {
                     "expected structured object as config map",
                 ));
             };
+            let mut meta = Map::new();
+            let mut annotations = Map::new();
+            annotations.insert(
+                "crossplane.io/external-name".to_owned(),
+                format!(
+                    "{}-{}",
+                    value.metadata.namespace.unwrap_or_default(),
+                    value.metadata.name.unwrap_or_default()
+                )
+                .into(),
+            );
+            meta.insert("annotations".to_owned(), annotations.into());
             let obj = Object {
                 api_version: Some("kubernetes.crossplane.io/v1alpha2".to_owned()),
                 kind: Some("Object".to_owned()),
-                metadata: Default::default(),
+                metadata: meta,
                 spec: ObjectSpec {
                     for_provider: ObjectSpecForProvider { manifest: conf_map },
                     provider_config_ref: Some(ObjectSpecProviderConfigRef {

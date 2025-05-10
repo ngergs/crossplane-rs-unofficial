@@ -27,11 +27,15 @@ To run this example execute the following steps:
 ```bash
 minikube start
 minikube addons enable registry
-kustomize build crossplane --enable-helm | kubectl apply --context minikube -f -
-kustomize build crossplane-providers --enable-helm | kubectl apply --context minikube -f -
 docker build -t crossplane-rust-config-fn ..
-crossplane xpkg build --package-root=package --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
-crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config:latest
-minikube image load $(minikube ip):5000/crossplane-rust-config:latest --pull=true
-kustomize build . --enable-helm | kubectl apply --context minikube -f -
+crossplane xpkg build --package-root=function --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
+crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
+minikube image load $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
+crossplane xpkg build --package-root=configuration --package-file=conf.xpkg
+crossplane xpkg push --package-files=conf.xpkg $(minikube ip):5000/crossplane-rust-config:latest
+minikube image load $(minikube ip):5000/crossplane-rust-config:latest
+kustomize build crossplane-providers --enable-helm | kubectl apply --context minikube -f -
+kustomize build minikube/crossplane --enable-helm | kubectl apply --context minikube -f -
+kustomize build minikube/crossplane-providers --enable-helm | kubectl apply --context minikube -f -
+kustomize build minikube --enable-helm | kubectl apply --context minikube -f -
 ```

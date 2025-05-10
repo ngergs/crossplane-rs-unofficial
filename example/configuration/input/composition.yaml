@@ -1,0 +1,13 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xconfigs.ngergs.de
+spec:
+  compositeTypeRef:
+    apiVersion: ngergs.de/v1alpha1
+    kind: XConfig
+  mode: Pipeline
+  pipeline:
+    - step: create-config
+      functionRef:
+        name: crossplane-rust-config-fn
