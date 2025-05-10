@@ -56,7 +56,7 @@ pub mod output {
                     value.metadata.namespace.unwrap_or_default(),
                     value.metadata.name.unwrap_or_default()
                 )
-                .into(),
+                    .into(),
             );
             meta.insert("annotations".to_owned(), annotations.into());
             let obj = Object {
@@ -72,7 +72,7 @@ pub mod output {
                     management_policies: vec![ObjectSpecManagementPoliciesItem::X],
                     // only empty values below
                     connection_details: vec![],
-                    deletion_policy: Default::default(),
+                    deletion_policy: ObjectSpecDeletionPolicy::default(),
                     publish_connection_details_to: None,
                     readiness: None,
                     references: vec![],
