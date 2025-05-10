@@ -22,20 +22,12 @@ yq '.spec.versions[0].schema.openAPIV3Schema | .title="XConfig" | . *= load("cla
 
 ## Minikube example
 
-To run this example execute the following steps:
-
-```bash
-minikube start
-minikube addons enable registry
-docker build -t crossplane-rust-config-fn ..
-crossplane xpkg build --package-root=function --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
-crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
-minikube image load $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
-crossplane xpkg build --package-root=configuration --package-file=conf.xpkg
-crossplane xpkg push --package-files=conf.xpkg $(minikube ip):5000/crossplane-rust-config:latest
-minikube image load $(minikube ip):5000/crossplane-rust-config:latest
-kustomize build crossplane-providers --enable-helm | kubectl apply --context minikube -f -
-kustomize build minikube/crossplane --enable-helm | kubectl apply --context minikube -f -
-kustomize build minikube/crossplane-providers --enable-helm | kubectl apply --context minikube -f -
-kustomize build minikube --enable-helm | kubectl apply --context minikube -f -
-```
+The [run.sh] script executes the following steps:
+- Start a [minikube](https://minikube.sigs.k8s.io/) local Kubernetes cluster
+- Builds the example rust composite function into a Docker image
+- Packages the image into a [crossplane composition function](https://docs.crossplane.io/latest/concepts/compositions/#how-composition-functions-work)
+- Bundles the composition function, the [crossplane composite resource definition](https://docs.crossplane.io/latest/concepts/composite-resource-definitions/) and a [compositon](https://docs.crossplane.io/latest/concepts/compositions/) into a [crossplane configuration](https://docs.crossplane.io/latest/concepts/packages/)
+- Makes these available to the minikube instance
+- Deploys the Kubernetes provider (needs to be done separately to configure the [runtime](https://github.com/crossplane/crossplane/issues/6382))
+- Deploys the Configuration
+- Deploys an example claim that will result in the creation of two ConfigMaps in the `test` namespace, the corresponding `Config`-[claim](https://docs.crossplane.io/latest/concepts/claims/) is also in the `test` namespace.
