@@ -1,7 +1,7 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
-  name: config-ngergs-de
+  name: crossplane-rust-config-fn
   annotations:
     render.crossplane.io/runtime: Development
 spec:
