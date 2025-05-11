@@ -43,7 +43,11 @@ pub mod output {
                     .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?,
             )?;
             let obj: Object = serde_json::from_value(obj_json)?;
-            let conf_json = serde_json::to_value(obj.spec.for_provider.manifest)?;
+            let conf_json = serde_json::to_value(
+                obj.status
+                    .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?
+                    .at_provider,
+            )?;
             Ok(serde_json::from_value(conf_json)?)
         }
     }

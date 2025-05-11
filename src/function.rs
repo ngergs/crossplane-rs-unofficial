@@ -16,7 +16,7 @@ impl FunctionRunnerService for ExampleFunction {
         &self,
         request: Request<RunFunctionRequest>,
     ) -> Result<Response<RunFunctionResponse>, Status> {
-        println!("RunFunction request: {:?}", request);
+        println!("Received request {:?}", request.metadata());
         let request = request.into_inner();
         let observed = request.observed.ok_or(Error::new(
             ErrorKind::InvalidData,
@@ -25,12 +25,10 @@ impl FunctionRunnerService for ExampleFunction {
         let observed_conf = observed
             .resources
             .into_iter()
-            .map(|(name, resource)| {
-                Ok::<_, Error>((name, (resource.ready(), resource.try_into()?)))
-            })
+            .map(|(name, resource)| Ok::<_, Error>((name, resource.try_into()?)))
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
-            .collect::<HashMap<_, (Ready, ConfigMap)>>();
+            .collect::<HashMap<_, ConfigMap>>();
         let xconfig: XConfig = observed.composite.try_into()?;
 
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
@@ -49,19 +47,15 @@ impl FunctionRunnerService for ExampleFunction {
                 data: Some(BTreeMap::from([("value".to_owned(), value)])),
                 ..Default::default()
             };
-            let ready = observed_conf.get(&value_set.name).map_or(
-                Ready::False,
-                |(ready, observed_conf)| {
-                    if *ready != Ready::True {
-                        return Ready::False;
-                    }
+            let ready = observed_conf
+                .get(&value_set.name)
+                .map_or(Ready::False, |observed_conf| {
                     if observed_conf.data == conf.data {
                         Ready::True
                     } else {
                         Ready::False
                     }
-                },
-            );
+                });
 
             let mut desired_res: Resource = conf.try_into()?;
             desired_res.set_ready(ready);
