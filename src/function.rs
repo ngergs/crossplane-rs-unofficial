@@ -1,10 +1,10 @@
 use crate::composite_resource::XConfig;
 use crate::crossplane::function_runner_service_server::FunctionRunnerService;
-use crate::crossplane::{ResponseMeta, RunFunctionRequest, RunFunctionResponse};
+use crate::crossplane::{Ready, Resource, ResponseMeta, RunFunctionRequest, RunFunctionResponse};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use prost_types::Duration;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::io::{Error, ErrorKind};
 use tonic::{Request, Response, Status};
 
@@ -18,14 +18,21 @@ impl FunctionRunnerService for ExampleFunction {
     ) -> Result<Response<RunFunctionResponse>, Status> {
         println!("RunFunction request: {:?}", request);
         let request = request.into_inner();
-        let xconfig: XConfig = request
-            .observed
-            .ok_or(Error::new(
-                ErrorKind::InvalidData,
-                "composite resource field not set",
-            ))?
-            .composite
-            .try_into()?;
+        let observed = request.observed.ok_or(Error::new(
+            ErrorKind::InvalidData,
+            "composite resource field not set",
+        ))?;
+        let observed_conf = observed
+            .resources
+            .into_iter()
+            .map(|(name, resource)| {
+                Ok::<_, Error>((name, (resource.ready(), resource.try_into()?)))
+            })
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .collect::<HashMap<_, (Ready, ConfigMap)>>();
+        let xconfig: XConfig = observed.composite.try_into()?;
+
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
         for value_set in xconfig.spec.value_sets {
             let mut value = xconfig.spec.template.clone();
@@ -42,7 +49,23 @@ impl FunctionRunnerService for ExampleFunction {
                 data: Some(BTreeMap::from([("value".to_owned(), value)])),
                 ..Default::default()
             };
-            desired.resources.insert(value_set.name, conf.try_into()?);
+            let ready = observed_conf.get(&value_set.name).map_or(
+                Ready::False,
+                |(ready, observed_conf)| {
+                    if *ready != Ready::True {
+                        return Ready::False;
+                    }
+                    if observed_conf.data == conf.data {
+                        Ready::True
+                    } else {
+                        Ready::False
+                    }
+                },
+            );
+
+            let mut desired_res: Resource = conf.try_into()?;
+            desired_res.set_ready(ready);
+            desired.resources.insert(value_set.name, desired_res);
         }
         let result = RunFunctionResponse {
             meta: request.meta.map(|meta| ResponseMeta {
@@ -58,6 +81,7 @@ impl FunctionRunnerService for ExampleFunction {
             requirements: None,
             conditions: vec![],
         };
+
         Ok(result.into())
     }
 }

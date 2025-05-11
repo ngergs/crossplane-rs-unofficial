@@ -33,6 +33,21 @@ pub mod output {
 
     typify::import_types!(schema = "schema/kubernetes_object.jsonschema");
 
+    impl TryFrom<Resource> for ConfigMap {
+        type Error = Error;
+
+        fn try_from(value: Resource) -> Result<Self, Self::Error> {
+            let obj_json = serde_json::to_value(
+                value
+                    .resource
+                    .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?,
+            )?;
+            let obj: Object = serde_json::from_value(obj_json)?;
+            let conf_json = serde_json::to_value(obj.spec.for_provider.manifest)?;
+            Ok(serde_json::from_value(conf_json)?)
+        }
+    }
+
     impl TryFrom<ConfigMap> for Resource {
         type Error = Error;
 
@@ -56,7 +71,7 @@ pub mod output {
                     value.metadata.namespace.unwrap_or_default(),
                     value.metadata.name.unwrap_or_default()
                 )
-                    .into(),
+                .into(),
             );
             meta.insert("annotations".to_owned(), annotations.into());
             let obj = Object {
