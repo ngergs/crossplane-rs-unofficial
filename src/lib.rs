@@ -46,7 +46,12 @@ pub mod output {
             let conf_json = serde_json::to_value(
                 obj.status
                     .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?
-                    .at_provider,
+                    .at_provider
+                    .ok_or(Error::new(
+                        ErrorKind::InvalidData,
+                        "missing status.at_provider",
+                    ))?
+                    .manifest,
             )?;
             Ok(serde_json::from_value(conf_json)?)
         }
