@@ -12,6 +12,12 @@ This example defines a `Configs` custom resources which can be used to generate 
 it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
 a Cloud-dependent provider for the example.
 
+## Most relevant Rust files
+
+- The core logic of the composite function can be found in [src/function.rs](src/function.rs).
+- The input and output mappings are in [src/lib.rs](src/lib.rs).
+- The startup of the grpc server and cli flag/env-var handling is in [src/bin/server/main.rs](src/bin/server.rs)
+
 ## Compile-time dependencies
 
 To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/) at compile-time.
