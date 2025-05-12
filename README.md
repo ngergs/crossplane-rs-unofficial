@@ -19,3 +19,7 @@ To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/)
 ## Example
 
 To see this composite function in action see the [example](example)-folder.
+
+## License
+
+The license obviously does not apply for the git submodules.
