@@ -11,17 +11,20 @@ function retry {
 
 minikube start
 minikube addons enable registry
+export MINIKUBE_IP=$(minikube ip)
 docker build -t crossplane-rust-config-fn ..
 crossplane xpkg build --package-root=function --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
 # registry might not be ready yet
-retry crossplane xpkg push --package-files=fn.xpkg $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
-minikube image load $(minikube ip):5000/crossplane-rust-config-fn:v0.1.0
+retry crossplane xpkg push --package-files=fn.xpkg ${MINIKUBE_IP}:5000/crossplane-rust-config-fn:v0.1.0
+minikube image load ${MINIKUBE_IP}:5000/crossplane-rust-config-fn:v0.1.0
+envsubst < crossplane-config-template.yaml > configuration/crossplane.yaml
 crossplane xpkg build --package-root=configuration --package-file=conf.xpkg
-crossplane xpkg push --package-files=conf.xpkg $(minikube ip):5000/crossplane-rust-config:latest
-minikube image load $(minikube ip):5000/crossplane-rust-config:latest
+crossplane xpkg push --package-files=conf.xpkg ${MINIKUBE_IP}:5000/crossplane-rust-config:latest
+minikube image load ${MINIKUBE_IP}:5000/crossplane-rust-config:latest
 kustomize build minikube/crossplane --enable-helm | kubectl apply --context minikube -f -
 # make sure crossplane is ready
 retry kubectl get CompositeResourceDefinition --context minikube
+envsubst < minikube/crossplane-providers/configuration-template.yaml >  minikube/crossplane-providers/configuration.yaml
 kustomize build minikube/crossplane-providers --enable-helm | kubectl apply --context minikube -f -
 # make sure kubernetes provider is ready
 retry kubectl get providerconfigs.kubernetes

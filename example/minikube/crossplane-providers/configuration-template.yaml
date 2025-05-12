@@ -3,5 +3,4 @@ kind: Configuration
 metadata:
   name: config
 spec:
-  # adjust minikube ip!
-  package: 192.168.49.2:5000/crossplane-rust-config:latest
+  package: ${MINIKUBE_IP}:5000/crossplane-rust-config:latest

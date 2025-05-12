@@ -12,7 +12,7 @@ spec:
     #      version: ">=v0.18.0"
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: 192.168.49.2:5000/crossplane-rust-config-fn
+      package: ${MINIKUBE_IP}:5000/crossplane-rust-config-fn
       version: "=v0.1.0"
   crossplane:
     version: ">=v1.19.0"
