@@ -1,6 +1,7 @@
 use crate::composite_resource::XConfig;
 use crate::crossplane::function_runner_service_server::FunctionRunnerService;
 use crate::crossplane::{Ready, Resource, ResponseMeta, RunFunctionRequest, RunFunctionResponse};
+use crate::TryFromStatus;
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use prost_types::Duration;
@@ -11,6 +12,7 @@ use tonic::{Request, Response, Status};
 pub struct ExampleFunction {}
 
 #[tonic::async_trait]
+//  The core logic of the composite function goes here
 impl FunctionRunnerService for ExampleFunction {
     async fn run_function(
         &self,
@@ -25,7 +27,7 @@ impl FunctionRunnerService for ExampleFunction {
         let observed_conf = observed
             .resources
             .into_iter()
-            .map(|(name, resource)| Ok::<_, Error>((name, resource.try_into()?)))
+            .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_status(resource)?)))
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .collect::<HashMap<_, ConfigMap>>();

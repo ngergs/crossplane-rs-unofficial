@@ -24,6 +24,7 @@ struct Args {
     tls_certs_dir: String,
 }
 
+/// Reads a TLS certificate or key from a directory  with the given file name
 fn cert_from_dir(
     cert_dir: &str,
     file_name: &str,
@@ -34,6 +35,7 @@ fn cert_from_dir(
 }
 
 #[tokio::main]
+/// Starts the grpc server and handles sigterm/sigint for shutdown
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     let addr = "0.0.0.0:9443".parse().unwrap();

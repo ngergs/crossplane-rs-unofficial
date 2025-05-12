@@ -4,7 +4,7 @@ set -euxo pipefail
 
 function retry {
   until eval "$*"; do
-    echo "Retying in 5 seconds"
+    echo "Retrying in 5 seconds"
     sleep 5
   done
 }
