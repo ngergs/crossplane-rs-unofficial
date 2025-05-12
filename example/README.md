@@ -14,8 +14,12 @@ crossplane render xr.yaml composition.yaml function.yaml
 
 ## Minikube example
 
-The [run.sh] script executes the following steps. It has retries for some steps build-in to e.g. wait for certain
-Kubernetes CRD to be available:
+The [run.sh] script executes the following steps to deploy a minimalistic crossplane setup
+using this composite function into a local [minikube](https://minikube.sigs.k8s.io/).
+All images are build and 'pushed' locally, no credentials for an external oci-registry are required.
+
+It has retries for some steps build-in to e.g. wait for certain
+Kubernetes CRD to be available. If you are done you can stop minikube via `minikube delete`:
 
 - Builds the example rust composite function into a Docker image
 - Start a [minikube](https://minikube.sigs.k8s.io/) local Kubernetes cluster
