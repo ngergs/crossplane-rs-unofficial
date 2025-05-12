@@ -9,10 +9,10 @@ function retry {
   done
 }
 
+docker build -t crossplane-rust-config-fn ..
 minikube start
 minikube addons enable registry
 export MINIKUBE_IP=$(minikube ip)
-docker build -t crossplane-rust-config-fn ..
 crossplane xpkg build --package-root=function --embed-runtime-image=crossplane-rust-config-fn --package-file=fn.xpkg
 # registry might not be ready yet
 retry crossplane xpkg push --package-files=fn.xpkg ${MINIKUBE_IP}:5000/crossplane-rust-config-fn:v0.1.0
