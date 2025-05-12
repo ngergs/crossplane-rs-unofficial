@@ -23,6 +23,8 @@ a Cloud-dependent provider for the example.
 
 To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/) at compile-time.
 
+The git submodules needs to be pulled for protobuf codegen to work (use e.g. `git submodule update --init --recursive`).
+
 ## Example
 
 To see this composite function in action see the [example](example)-folder.
