@@ -6,7 +6,8 @@ written in Rust.
 
 The technical requirements follow from the
 official [composite functions specification](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
-Basically we setup a grpc-server that has to support some custom flags via the CLI and env vars to configure mTLS.
+Basically we set up a grpc-server that has to support some custom CLI flags as well as configuration environment
+variables (primarily for crossplane to inject the mTLS-configuration).
 
 This example defines a `Configs` custom resources which can be used to generate multiple ConfigMaps using a template (
 it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
@@ -16,7 +17,7 @@ a Cloud-dependent provider for the example.
 
 - The core logic of the composite function can be found in [src/function.rs](src/function.rs).
 - The input and output mappings are in [src/lib.rs](src/lib.rs).
-- The startup of the grpc server and cli flag/env-var handling is in [src/bin/server/main.rs](src/bin/server.rs)
+- The startup of the grpc server and cli flag/env-var handling is in [src/bin/server/main.rs](src/bin/server.rs).
 
 ## Compile-time dependencies
 
