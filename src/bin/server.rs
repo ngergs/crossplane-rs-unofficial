@@ -4,6 +4,7 @@ use crossplane_rust_example::function::ExampleFunction;
 use std::path::Path;
 use tokio::signal::unix::{signal, SignalKind};
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
+use tracing::Level;
 
 /// CLI arguments as required by the spec, <https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md>
 #[derive(Parser, Debug)]
@@ -38,6 +39,15 @@ fn cert_from_dir(
 /// Starts the grpc server and handles sigterm/sigint for shutdown
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
+
+    let mut log_config = tracing_subscriber::fmt().json();
+    log_config = if args.debug {
+        log_config.with_max_level(Level::DEBUG)
+    } else {
+        log_config.with_max_level(Level::INFO)
+    };
+    log_config.init();
+
     let addr = "[::]:9443".parse()?;
     let mut srv = Server::builder();
     if !args.insecure {

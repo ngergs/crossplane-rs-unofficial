@@ -8,6 +8,7 @@ use prost_types::Duration;
 use std::collections::{BTreeMap, HashMap};
 use std::io::{Error, ErrorKind};
 use tonic::{Request, Response, Status};
+use tracing::info;
 
 pub struct ExampleFunction {}
 
@@ -18,8 +19,14 @@ impl FunctionRunnerService for ExampleFunction {
         &self,
         request: Request<RunFunctionRequest>,
     ) -> Result<Response<RunFunctionResponse>, Status> {
-        println!("Received request {:?}", request.metadata());
         let request = request.into_inner();
+        info!(
+            tag = request
+                .meta
+                .as_ref()
+                .map_or("missing".to_owned(), |m| m.tag.clone()),
+            "Received request"
+        );
         let observed = request.observed.ok_or(Error::new(
             ErrorKind::InvalidData,
             "composite resource field not set",
