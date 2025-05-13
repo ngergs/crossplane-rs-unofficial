@@ -38,7 +38,7 @@ fn cert_from_dir(
 /// Starts the grpc server and handles sigterm/sigint for shutdown
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
-    let addr = "0.0.0.0:9443".parse().unwrap();
+    let addr = "[::]:9443".parse()?;
     let mut srv = Server::builder();
     if !args.insecure {
         let ca = cert_from_dir(args.tls_certs_dir.as_str(), "ca.crt")?;
