@@ -20,17 +20,22 @@ impl FunctionRunnerService for ExampleFunction {
         request: Request<RunFunctionRequest>,
     ) -> Result<Response<RunFunctionResponse>, Status> {
         let request = request.into_inner();
-        info!(
-            tag = request
-                .meta
-                .as_ref()
-                .map_or("missing".to_owned(), |m| m.tag.clone()),
-            "Received request"
-        );
         let observed = request.observed.ok_or(Error::new(
             ErrorKind::InvalidData,
             "composite resource field not set",
         ))?;
+        let xconfig: XConfig = observed.composite.try_into()?;
+        let claim_ref = xconfig.spec.claim_ref.ok_or(Error::new(
+            ErrorKind::InvalidData,
+            ".spec.claimRef not present",
+        ))?;
+        info!(
+            api_version = claim_ref.api_version,
+            kind = claim_ref.kind,
+            name = claim_ref.name,
+            namespace = claim_ref.namespace,
+            "Received request"
+        );
         let observed_conf = observed
             .resources
             .into_iter()
@@ -38,7 +43,6 @@ impl FunctionRunnerService for ExampleFunction {
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .collect::<HashMap<_, ConfigMap>>();
-        let xconfig: XConfig = observed.composite.try_into()?;
 
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
         for value_set in xconfig.spec.value_sets {
@@ -50,7 +54,7 @@ impl FunctionRunnerService for ExampleFunction {
                 metadata: ObjectMeta {
                     // not possible? https://github.com/crossplane/crossplane/issues/1730
                     name: Some(value_set.name.clone()),
-                    namespace: xconfig.spec.claim_ref.clone().map(|c| c.namespace),
+                    namespace: Some(claim_ref.namespace.clone()),
                     ..Default::default()
                 },
                 data: Some(BTreeMap::from([("value".to_owned(), value)])),
