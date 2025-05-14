@@ -102,13 +102,15 @@ pub mod output {
                     "expected structured object as config map",
                 ));
             };
-            let mut meta = Map::new();
+
             let mut annotations = Map::new();
             annotations.insert(
                 "crossplane.io/external-name".to_owned(),
                 format!("{}-{}", namespace, name).into(),
             );
+            let mut meta = Map::new();
             meta.insert("annotations".to_owned(), annotations.into());
+
             let obj = Object {
                 api_version: Some("kubernetes.crossplane.io/v1alpha2".to_owned()),
                 kind: Some("Object".to_owned()),
