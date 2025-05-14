@@ -1,5 +1,5 @@
 [submodule "example/schema/provider-kubernetes"]
-	path = schema/provider-kubernetes
+	path = example/schema/provider-kubernetes
 	url = git@github.com:crossplane-contrib/provider-kubernetes.git
 [submodule "sdk/schema/crossplane"]
 	path = sdk/schema/crossplane
