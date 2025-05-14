@@ -1,5 +1,5 @@
 use crate::composite_resource::XConfig;
-use crate::{TryFromStatus, TryIntoResource};
+use crate::output::{TryFromStatus, TryIntoResource};
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
     Ready, Resource, ResponseMeta, RunFunctionRequest, RunFunctionResponse,
