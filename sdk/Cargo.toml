@@ -5,3 +5,19 @@ edition = "2024"
 
 [lints.clippy]
 pedantic = "warn"
+
+[dependencies]
+# IO
+tonic = { version = "0.13.1", features = ["tls-aws-lc"] }
+tokio = { version = "1.45.0", features = ["rt-multi-thread", "signal"] }
+prost = "0.13.5"
+prost-types = "0.13.5"
+prost-wkt-types = "0.6.1"
+# cli
+clap = { version = "4.5.38", features = ["derive", "env"] }
+# Logging
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["json"] }
+
+[build-dependencies]
+tonic-build = "0.13.1"
