@@ -1,8 +1,6 @@
 # crossplane-rust-unofficial
 
-This is an
-*unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
-sdk and example written in Rust.
+This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) sdk and example written in Rust.
 
 See the [example](example)-subfolder to get started.
 
@@ -14,7 +12,7 @@ The git submodules needs to be pulled for protobuf codegen to work (use e.g. `gi
 
 ## Crates
 
-There are **no** crates published for this sdk yet.
+There are **no crates published** for this sdk yet.
 Please inform me if you are interested in using it and I will push it and add semantic versioning.
 Till then, you can use it by defining a git dependency in Cargo.
 

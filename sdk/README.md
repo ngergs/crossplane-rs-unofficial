@@ -1,11 +1,8 @@
 # crossplane-rust-sdk-unofficial
 
-This is an
-*unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
-sdk written in Rust.
+This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) sdk written in Rust.
 
-The technical requirements follow from the
-official [composite functions specification](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
+The technical requirements follow from the  official [composite functions specification](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
 Basically we set up a grpc-server that has to support some custom CLI flags as well as configuration environment
 variables (primarily for crossplane to inject the mTLS-configuration).
 
@@ -19,3 +16,13 @@ variables (primarily for crossplane to inject the mTLS-configuration).
 To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/) at compile-time.
 
 The git submodules needs to be pulled for protobuf codegen to work (use e.g. `git submodule update --init --recursive`).
+
+## Crates
+
+There are **no crates published** for this sdk yet.
+Please inform me if you are interested in using it and I will push it and add semantic versioning.
+Till then, you can use it by defining a git dependency in Cargo.
+
+```toml
+crossplane-rust-sdk-unofficial = { git = "https://github.com/ngergs/crossplane-rust-unofficial.git" }
+```
