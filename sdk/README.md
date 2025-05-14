@@ -1,4 +1,4 @@
-# crossplane-rust-example
+# crossplane-rust-sdk-unofficial
 
 This is an
 *unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
