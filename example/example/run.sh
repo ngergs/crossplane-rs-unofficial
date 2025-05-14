@@ -9,7 +9,7 @@ function retry {
   done
 }
 
-docker build -t crossplane-rust-config-fn ..
+docker build -t crossplane-rust-config-fn -f ../Dockerfile ../..
 minikube start
 minikube addons enable registry
 export MINIKUBE_IP=$(minikube ip)
