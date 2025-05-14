@@ -1,6 +1,6 @@
-[submodule "example/schema/crossplane"]
+[submodule "schema/crossplane"]
 	path = schema/crossplane
 	url = git@github.com:crossplane/crossplane.git
-[submodule "example/schema/provider-kubernetes"]
+[submodule "schema/provider-kubernetes"]
 	path = schema/provider-kubernetes
 	url = git@github.com:crossplane-contrib/provider-kubernetes.git

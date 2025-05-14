@@ -1,0 +1,7 @@
+/target
+.idea
+**/*.xpkg
+**/charts
+
+# generated via build.rs
+src/apiextensions.r#fn.proto.v1.rs
