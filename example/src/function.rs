@@ -2,7 +2,7 @@ use crate::composite_resource::XConfig;
 use crate::output::{TryFromStatus, TryIntoResource};
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
-    Ready, Resource, ResponseMeta, RunFunctionRequest, RunFunctionResponse,
+    Ready, ResponseMeta, RunFunctionRequest, RunFunctionResponse,
 };
 use crossplane_rust_sdk_unofficial::prost_types::Duration;
 use crossplane_rust_sdk_unofficial::tonic;
@@ -73,7 +73,7 @@ impl FunctionRunnerService for ExampleFunction {
                     }
                 });
 
-            let mut desired_res: Resource = conf.try_into_resource()?;
+            let mut desired_res = conf.try_into_resource()?;
             desired_res.set_ready(ready);
             desired.resources.insert(value_set.name, desired_res);
         }
