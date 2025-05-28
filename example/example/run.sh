@@ -24,6 +24,7 @@ minikube image load ${MINIKUBE_IP}:5000/crossplane-rust-config:latest
 kustomize build minikube/crossplane --enable-helm | kubectl apply --context minikube -f -
 # make sure crossplane is ready
 retry kubectl get CompositeResourceDefinition --context minikube
+retry kubectl get Provider --context minikube
 envsubst < minikube/crossplane-providers/configuration-template.yaml >  minikube/crossplane-providers/configuration.yaml
 kustomize build minikube/crossplane-providers --enable-helm | kubectl apply --context minikube -f -
 # make sure kubernetes provider is ready

@@ -37,6 +37,9 @@ fn cert_from_dir(
 }
 
 /// Starts the grpc server and handles sigterm/sigint for shutdown
+/// # Errors
+/// - If the tcp port 9443 cannot be claimed.
+/// - If referenced tls certificate files are missing or have malformed content.
 pub async fn run_server(f: impl FunctionRunnerService) -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 

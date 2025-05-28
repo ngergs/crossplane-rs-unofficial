@@ -106,7 +106,7 @@ pub mod output {
             let mut annotations = Map::new();
             annotations.insert(
                 "crossplane.io/external-name".to_owned(),
-                format!("{}-{}", namespace, name).into(),
+                format!("{namespace}-{name}").into(),
             );
             let mut meta = Map::new();
             meta.insert("annotations".to_owned(), annotations.into());
