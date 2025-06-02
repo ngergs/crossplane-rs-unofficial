@@ -55,7 +55,6 @@ impl FunctionRunnerService for ExampleFunction {
             }
             let conf = ConfigMap {
                 metadata: ObjectMeta {
-                    // not possible? https://github.com/crossplane/crossplane/issues/1730
                     name: Some(value_set.name.clone()),
                     namespace: Some(claim_ref.namespace.clone()),
                     ..Default::default()
