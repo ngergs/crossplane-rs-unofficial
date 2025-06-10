@@ -103,13 +103,11 @@ pub mod output {
                 ));
             };
 
-            let mut annotations = Map::new();
-            annotations.insert(
+            let annotations: Map<_, _> = Map::from_iter([(
                 "crossplane.io/external-name".to_owned(),
                 format!("{namespace}-{name}").into(),
-            );
-            let mut meta = Map::new();
-            meta.insert("annotations".to_owned(), annotations.into());
+            )]);
+            let meta = Map::from_iter([("annotations".to_owned(), annotations.into())]);
 
             let obj = Object {
                 api_version: Some("kubernetes.crossplane.io/v1alpha2".to_owned()),
