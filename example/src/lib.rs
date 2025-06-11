@@ -103,7 +103,7 @@ pub mod output {
                 ));
             };
 
-            let annotations: Map<_, _> = Map::from_iter([(
+            let annotations = Map::from_iter([(
                 "crossplane.io/external-name".to_owned(),
                 format!("{namespace}-{name}").into(),
             )]);
