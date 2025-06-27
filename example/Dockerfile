@@ -1,5 +1,5 @@
 # needs to run in ../ to include the sdk directory in the docker environment
-FROM rust:1.87-bookworm AS builder
+FROM rust:1.88-bookworm AS builder
 WORKDIR /usr/src/server
 COPY . .
 RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
