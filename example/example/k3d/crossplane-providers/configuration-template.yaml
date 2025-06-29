@@ -3,4 +3,4 @@ kind: Configuration
 metadata:
   name: config
 spec:
-  package: ${MINIKUBE_IP}:5000/crossplane-rust-config:latest
+  package: ${REGISTRY}/${CONF_IMAGE}:${CONF_TAG}

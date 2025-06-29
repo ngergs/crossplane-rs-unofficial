@@ -1,0 +1,9 @@
+#see https://k3d.io/v5.6.0/usage/configfile/#config-options
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: crossplane
+registries:
+  create:
+    name: k3d-crossplane.localhost
+    hostPort: "5000"
