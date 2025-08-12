@@ -1,8 +1,8 @@
 # needs to run in ../ to include the sdk directory in the docker environment
-FROM rust:1.88-bookworm AS builder
+FROM rust:1.89-bookworm AS builder
 WORKDIR /usr/src/server
 COPY . .
-RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y protobuf-compiler && rm -rf /var/lib/apt/lists/* && cargo install kopium
 RUN cd example && cargo install --path .
 
 # rust builder image also uses debian 12 so same glibc version

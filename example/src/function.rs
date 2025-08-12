@@ -1,4 +1,3 @@
-use crate::composite_resource::XConfig;
 use crate::output::{TryFromStatus, TryIntoResource};
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
@@ -12,8 +11,11 @@ use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use std::collections::{BTreeMap, HashMap};
 use std::io::{Error, ErrorKind};
+use kube::Resource;
+use crate::composite_resource::Config;
 
-pub struct ExampleFunction {}
+pub struct ExampleFunction {
+}
 
 //  The core logic of the composite function goes here
 #[tonic::async_trait]
@@ -27,16 +29,17 @@ impl FunctionRunnerService for ExampleFunction {
             ErrorKind::InvalidData,
             "composite resource field not set",
         ))?;
-        let xconfig: XConfig = observed.composite.try_into()?;
-        let claim_ref = xconfig.spec.claim_ref.ok_or(Error::new(
+        info!("got observed: {:?}", observed);
+        let config: Config = observed.composite.try_into()?;
+        let namespace=config.meta().namespace.clone().ok_or(Error::new(
             ErrorKind::InvalidData,
-            ".spec.claimRef not present",
+            "composite metadata.namespace field not set",
         ))?;
         info!(
-            api_version = claim_ref.api_version,
-            kind = claim_ref.kind,
-            name = claim_ref.name,
-            namespace = claim_ref.namespace,
+            api_version =Config::api_version(&()).into_owned(),
+            kind = Config::kind(&()).into_owned(),
+            name = config.meta().name,
+            namespace = config.meta().namespace,
             "Received request"
         );
         let observed_conf = observed
@@ -48,15 +51,15 @@ impl FunctionRunnerService for ExampleFunction {
             .collect::<HashMap<_, ConfigMap>>();
 
         let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
-        for value_set in xconfig.spec.value_sets {
-            let mut value = xconfig.spec.template.clone();
+        for value_set in config.spec.value_sets {
+            let mut value = config.spec.template.clone();
             for (k, v) in &value_set.values {
                 value = value.replace(&format!("{{{k}}}"), v);
             }
             let conf = ConfigMap {
                 metadata: ObjectMeta {
                     name: Some(value_set.name.clone()),
-                    namespace: Some(claim_ref.namespace.clone()),
+                    namespace: Some(namespace.clone()),
                     ..Default::default()
                 },
                 data: Some(BTreeMap::from([("value".to_owned(), value)])),
@@ -89,6 +92,7 @@ impl FunctionRunnerService for ExampleFunction {
             results: vec![],
             requirements: None,
             conditions: vec![],
+            output: None,
         };
 
         Ok(result.into())

@@ -7,5 +7,5 @@ pub mod server;
 #[allow(clippy::all, clippy::pedantic, clippy::nursery)]
 // Just include the crossplane types generated via tonic-build (see ../build.rs)
 pub mod crossplane {
-    include!("apiextensions.r#fn.proto.v1.rs");
+    include!("generated/apiextensions.r#fn.proto.v1.rs");
 }

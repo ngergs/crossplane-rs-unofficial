@@ -1,13 +1,11 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xconfigs.ngergs.de
+  name: configs.ngergs.de
 spec:
+  scope: Namespaced
   group: ngergs.de
   names:
-    kind: XConfig
-    plural: xconfigs
-  claimNames:
     kind: Config
     plural: configs
   versions:

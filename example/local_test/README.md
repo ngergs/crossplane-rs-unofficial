@@ -28,7 +28,6 @@ If you are done you can stop k3d via `k3d cluster delete -c k3d.yaml`:
 - Packages the image into a [crossplane composition function](https://docs.crossplane.io/latest/concepts/compositions/#how-composition-functions-work)
 - Bundles the composition function, the [crossplane composite resource definition](https://docs.crossplane.io/latest/concepts/composite-resource-definitions/)
   and a [compositon](https://docs.crossplane.io/latest/concepts/compositions/) into a [crossplane configuration](https://docs.crossplane.io/latest/concepts/packages/)
-- Deploys the Kubernetes provider (needs to be done separately to configure the [runtime](https://github.com/crossplane/crossplane/issues/6382))
 - Deploys the Configuration
 - Deploys an example claim that will result in the creation of two ConfigMaps in the `test` namespace, the corresponding
   `Config`-[claim](https://docs.crossplane.io/latest/concepts/claims/) is also in the `test` namespace.

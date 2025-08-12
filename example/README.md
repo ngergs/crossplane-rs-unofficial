@@ -15,9 +15,10 @@ a Cloud-dependent provider for the example.
 ## Compile-time dependencies
 
 To run the protobuf codegen used by the sdk we need [protoc](https://protobuf.dev/installation/) at compile-time.
+To generate the rust types for the xrd we need [kopium](https://github.com/kube-rs/kopium) at compile-time.
 
 The git submodules needs to be pulled codegen to work (use e.g. `git submodule update --init --recursive`).
 
 ## Example
 
-To see this composite function in action see the [example](example)-folder.
+To see this composite function in action see the [local_test](local_test)-folder.
