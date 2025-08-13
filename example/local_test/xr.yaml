@@ -15,8 +15,3 @@ spec:
       values:
         world: world
         timeOfDay: evening
-  claimRef:
-    apiVersion: ngergs.de/v1alpha1
-    kind: Config
-    name: example-configs
-    namespace: test
