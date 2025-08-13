@@ -1,7 +1,9 @@
 apiVersion: ngergs.de/v1alpha1
-kind: XConfig
+kind: Config
 metadata:
   name: example-configs
+  namespace: test
+  generation: 3
 spec:
   template: Hello {world}, it's {timeOfDay}
   valueSets:

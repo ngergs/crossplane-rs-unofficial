@@ -4,4 +4,3 @@ kind: Kustomization
 
 resources:
   - configuration.yaml
-  - k8s.yaml

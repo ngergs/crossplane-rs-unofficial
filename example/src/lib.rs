@@ -5,23 +5,15 @@ pub mod function;
 /// The composite used as input for this function.
 pub mod composite_resource {
     use crossplane_rust_sdk_unofficial::crossplane::Resource;
-    use std::io::{Error, ErrorKind};
+    use std::io::{Error};
 
-    typify::import_types!(schema = "schema/xr.jsonschema");
+    include!("generated/xrd.rs");
 
-    impl TryFrom<Option<Resource>> for XConfig {
+    impl TryFrom<Option<Resource>> for Config {
         type Error = Error;
 
         fn try_from(value: Option<Resource>) -> Result<Self, Self::Error> {
-            let resource = value
-                .ok_or(Error::new(ErrorKind::InvalidData, "resource not set"))?
-                .resource
-                .ok_or(Error::new(
-                    ErrorKind::InvalidData,
-                    ".resource field not set",
-                ))?;
-            let value = serde_json::to_value(&resource)?;
-            Ok(serde_json::from_value(value)?)
+            crossplane_rust_sdk_unofficial::from_resource(value)
         }
     }
 }
@@ -33,10 +25,7 @@ pub mod output {
     use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
     use k8s_openapi::Metadata;
     use serde::Serialize;
-    use serde_json::Map;
     use std::io::{Error, ErrorKind};
-
-    typify::import_types!(schema = "schema/kubernetes_object.jsonschema");
 
     /// `TryFromStatus` works the same way as `TryFrom`.
     /// It is used to clarify that `.status` and not `.spec` value of the resource will be used
@@ -64,23 +53,12 @@ pub mod output {
         type Error = Error;
 
         fn try_from_status(value: Resource) -> Result<Self, Self::Error> {
-            let obj_json = serde_json::to_value(
+            let res_json = serde_json::to_value(
                 value
                     .resource
-                    .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?,
+                    .ok_or(Error::new(ErrorKind::InvalidData, "resource missing"))?,
             )?;
-            let obj: Object = serde_json::from_value(obj_json)?;
-            let conf_json = serde_json::to_value(
-                obj.status
-                    .ok_or(Error::new(ErrorKind::InvalidData, "recource missing"))?
-                    .at_provider
-                    .ok_or(Error::new(
-                        ErrorKind::InvalidData,
-                        "missing status.at_provider",
-                    ))?
-                    .manifest,
-            )?;
-            Ok(serde_json::from_value(conf_json)?)
+            Ok(serde_json::from_value(res_json)?)
         }
     }
 
@@ -88,50 +66,14 @@ pub mod output {
         type Error = Error;
 
         fn try_into_resource(self) -> Result<Resource, Self::Error> {
-            // have to wrap it in a kubernetes-provider Object till crossplane v2
-            // (no namespaced object support as output from compositions in v1)
-            // see https://github.com/crossplane/crossplane/issues/1730
-            let meta_input = self.metadata();
-            let name = meta_input.name.clone().unwrap_or_default();
-            let namespace = meta_input.namespace.clone().unwrap_or_default();
-
-            let conf_json = serde_json::to_value(self)?;
-            let serde_json::Value::Object(conf_map) = conf_json else {
+            let obj_json = serde_json::to_value(self)?;
+            let serde_json::Value::Object(_) = &obj_json else {
                 return Err(Error::new(
                     ErrorKind::InvalidData,
-                    "expected structured object as config map",
+                    "expected structured object as Kubernetes resource",
                 ));
             };
 
-            let annotations = Map::from_iter([(
-                "crossplane.io/external-name".to_owned(),
-                format!("{namespace}-{name}").into(),
-            )]);
-            let meta = Map::from_iter([("annotations".to_owned(), annotations.into())]);
-
-            let obj = Object {
-                api_version: Some("kubernetes.crossplane.io/v1alpha2".to_owned()),
-                kind: Some("Object".to_owned()),
-                metadata: meta,
-                spec: ObjectSpec {
-                    for_provider: ObjectSpecForProvider { manifest: conf_map },
-                    provider_config_ref: Some(ObjectSpecProviderConfigRef {
-                        name: "provider-kubernetes".to_string(),
-                        policy: None,
-                    }),
-                    management_policies: vec![ObjectSpecManagementPoliciesItem::X],
-                    // only empty values below
-                    connection_details: vec![],
-                    deletion_policy: ObjectSpecDeletionPolicy::default(),
-                    publish_connection_details_to: None,
-                    readiness: None,
-                    references: vec![],
-                    watch: false,
-                    write_connection_secret_to_ref: None,
-                },
-                status: None,
-            };
-            let obj_json = serde_json::to_value(&obj)?;
             let obj_struct = serde_json::from_value(obj_json)?;
             Ok(Resource {
                 resource: Some(obj_struct),

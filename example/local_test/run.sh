@@ -42,8 +42,6 @@ retry kubectl get CompositeResourceDefinition --context ${CONTEXT}
 retry kubectl get Provider --context ${CONTEXT}
 envsubst < k3d/crossplane-providers/configuration-template.yaml >  k3d/crossplane-providers/configuration.yaml
 kustomize build k3d/crossplane-providers --enable-helm | kubectl apply --context ${CONTEXT} -f -
-# make sure kubernetes provider is ready
-retry kubectl get providerconfigs.kubernetes
 # make sure our function Configuration is ready
 retry kubectl get Configs
 kustomize build k3d --enable-helm | kubectl apply --context ${CONTEXT} -f -

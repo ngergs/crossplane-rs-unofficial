@@ -4,4 +4,4 @@
 **/charts
 
 # generated via build.rs
-sdk/src/apiextensions.r#fn.proto.v1.rs
+**/generated/*

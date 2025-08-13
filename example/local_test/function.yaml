@@ -7,5 +7,5 @@ metadata:
 spec:
   # The CLI ignores this package when using the Development runtime.
   # You can set it to any value.
-  package: xconfigs
+  package: configs
 
