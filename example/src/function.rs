@@ -29,7 +29,6 @@ impl FunctionRunnerService for ExampleFunction {
             ErrorKind::InvalidData,
             "composite resource field not set",
         ))?;
-        info!("got observed: {:?}", observed);
         let config: Config = observed.composite.try_into()?;
         let namespace=config.meta().namespace.clone().ok_or(Error::new(
             ErrorKind::InvalidData,
