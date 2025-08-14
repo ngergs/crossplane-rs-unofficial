@@ -1,18 +1,12 @@
-apiVersion: meta.pkg.crossplane.io/v1alpha1
+apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
   name: configs
 spec:
   dependsOn:
-    # kubernetes provider cannot be included from ehre as we have to configure the runtime
-    # upstream issue for this limitation https://github.com/crossplane/crossplane/issues/6382
-    #    - apiVersion: pkg.crossplane.io/v1
-    #      kind: Provider
-    #      package: xpkg.upbound.io/upbound/provider-kubernetes
-    #      version: ">=v0.18.0"
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: ${REGISTRY}/${FN_IMAGE}
       version: "=${FN_TAG}"
   crossplane:
-    version: ">=v1.19.0"
+    version: ">=v2.0.0"
