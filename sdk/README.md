@@ -1,8 +1,11 @@
 # crossplane-rust-sdk-unofficial
 
-This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) sdk written in Rust.
+This is an **unofficial
+** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
+sdk written in Rust.
 
-The technical requirements follow from the  official [composite functions specification](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
+The technical requirements follow from the
+official [composite functions specification](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
 Basically we set up a grpc-server that has to support some custom CLI flags as well as configuration environment
 variables (primarily for crossplane to inject the mTLS-configuration).
 

@@ -1,7 +1,7 @@
-pub use tonic;
-pub use tokio;
-pub use tracing;
 pub use prost_types;
+pub use tokio;
+pub use tonic;
+pub use tracing;
 pub mod server;
 
 mod from_resource;

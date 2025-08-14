@@ -5,7 +5,7 @@ pub mod function;
 /// The composite used as input for this function.
 pub mod composite_resource {
     use crossplane_rust_sdk_unofficial::crossplane::Resource;
-    use std::io::{Error};
+    use std::io::Error;
 
     include!("generated/xrd.rs");
 
@@ -62,7 +62,7 @@ pub mod output {
         }
     }
 
-    impl<T: Metadata<Ty = ObjectMeta> + Serialize> TryIntoResource for T {
+    impl<T: Metadata<Ty=ObjectMeta> + Serialize> TryIntoResource for T {
         type Error = Error;
 
         fn try_into_resource(self) -> Result<Resource, Self::Error> {

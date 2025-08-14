@@ -1,3 +1,4 @@
+use crate::composite_resource::Config;
 use crate::output::{TryFromStatus, TryIntoResource};
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
@@ -9,13 +10,11 @@ use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rust_sdk_unofficial::tracing::info;
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
+use kube::Resource;
 use std::collections::{BTreeMap, HashMap};
 use std::io::{Error, ErrorKind};
-use kube::Resource;
-use crate::composite_resource::Config;
 
-pub struct ExampleFunction {
-}
+pub struct ExampleFunction {}
 
 //  The core logic of the composite function goes here
 #[tonic::async_trait]
@@ -30,7 +29,7 @@ impl FunctionRunnerService for ExampleFunction {
             "composite resource field not set",
         ))?;
         let config: Config = observed.composite.try_into()?;
-        let namespace=config.meta().namespace.clone().ok_or(Error::new(
+        let namespace = config.meta().namespace.clone().ok_or(Error::new(
             ErrorKind::InvalidData,
             "composite metadata.namespace field not set",
         ))?;
