@@ -1,11 +1,9 @@
 # crossplane-rust-example-unofficial
 
-This is an **unofficial
-** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
-example written in Rust.
+This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) example written in Rust.
 
-This example defines a `Configs` custom resources which can be used to generate multiple ConfigMaps using a template (
-it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
+This example defines a `Configs` custom resource which can be used to generate multiple ConfigMaps using a template 
+(it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
 a Cloud-dependent provider for the example.
 
 ## Most relevant Rust files
@@ -15,8 +13,9 @@ a Cloud-dependent provider for the example.
 
 ## Compile-time dependencies
 
-To run the protobuf codegen used by the sdk we need [protoc](https://protobuf.dev/installation/) at compile-time.
-To generate the rust types for the xrd we need [kopium](https://github.com/kube-rs/kopium) at compile-time.
+The sdk requires [protoc](https://protobuf.dev/installation/) to generate rust structs from the protobuf crossplane schema 
+and this example needs furthermore [kopium](https://github.com/kube-rs/kopium) to generate rust types from the composite
+resource definition given under [schema](schema).
 
 The git submodules needs to be pulled codegen to work (use e.g. `git submodule update --init --recursive`).
 
