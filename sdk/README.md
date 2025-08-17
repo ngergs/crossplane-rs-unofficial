@@ -14,9 +14,8 @@ variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Compile-time dependencies
 
-To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/) at compile-time.
-
-The git submodules needs to be pulled for protobuf codegen to work (use e.g. `git submodule update --init --recursive`).
+- [protoc](https://protobuf.dev/installation/) to generate rust structs from the protobuf crossplane schema (sdk).
+- The git submodules needs to be pulled for the sdk-codegen to work (use e.g. `git submodule update --init --recursive`).
 
 ## Crates
 

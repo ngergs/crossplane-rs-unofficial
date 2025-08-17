@@ -13,11 +13,9 @@ a Cloud-dependent provider for the example.
 
 ## Compile-time dependencies
 
-The sdk requires [protoc](https://protobuf.dev/installation/) to generate rust structs from the protobuf crossplane schema 
-and this example needs furthermore [kopium](https://github.com/kube-rs/kopium) to generate rust types from the composite
-resource definition given under [schema](schema).
-
-The git submodules needs to be pulled codegen to work (use e.g. `git submodule update --init --recursive`).
+- [protoc](https://protobuf.dev/installation/) to generate rust structs from the protobuf crossplane schema (sdk).
+- [kopium](https://github.com/kube-rs/kopium) to generate rust types from the composite resource definition given under [schema](schema).
+- The git submodules needs to be pulled for the sdk-codegen to work (use e.g. `git submodule update --init --recursive`).
 
 ## Example
 
