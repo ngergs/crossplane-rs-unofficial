@@ -1,5 +1,4 @@
 use crate::composite_resource::Config;
-use crate::output::{TryFromStatus, TryIntoResource};
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
     Ready, ResponseMeta, RunFunctionRequest, RunFunctionResponse,
@@ -8,6 +7,7 @@ use crossplane_rust_sdk_unofficial::prost_types::Duration;
 use crossplane_rust_sdk_unofficial::tonic;
 use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rust_sdk_unofficial::tracing::info;
+use crossplane_rust_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use kube::Resource;
@@ -28,13 +28,13 @@ impl FunctionRunnerService for ExampleFunction {
             ErrorKind::InvalidData,
             "composite resource field not set",
         ))?;
-        let config: Config = observed.composite.try_into()?;
+        let config = Config::try_from_resource(observed.composite)?;
         let namespace = config.meta().namespace.clone().ok_or(Error::new(
             ErrorKind::InvalidData,
             "composite metadata.namespace field not set",
         ))?;
         info!(
-            api_version =Config::api_version(&()).into_owned(),
+            api_version = Config::api_version(&()).into_owned(),
             kind = Config::kind(&()).into_owned(),
             name = config.meta().name,
             namespace = config.meta().namespace,
@@ -43,7 +43,9 @@ impl FunctionRunnerService for ExampleFunction {
         let observed_conf = observed
             .resources
             .into_iter()
-            .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_status(resource)?)))
+            .map(|(name, resource)| {
+                Ok::<_, Error>((name, ConfigMap::try_from_resource(Some(resource))?))
+            })
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .collect::<HashMap<_, ConfigMap>>();

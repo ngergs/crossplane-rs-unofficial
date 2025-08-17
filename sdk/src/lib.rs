@@ -1,11 +1,14 @@
+pub use k8s_openapi;
 pub use prost_types;
 pub use tokio;
 pub use tonic;
 pub use tracing;
+
+pub use map_resource::{TryFromResource, TryIntoResource};
+
 pub mod server;
 
-mod from_resource;
-pub use from_resource::from_resource;
+mod map_resource;
 
 #[allow(clippy::all, clippy::pedantic, clippy::nursery)]
 // Just include the crossplane types generated via tonic-build (see ../build.rs)
