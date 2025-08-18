@@ -2,9 +2,28 @@
 
 This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) example written in Rust.
 
-This example defines a `Configs` custom resource which can be used to generate multiple ConfigMaps using a template 
+This example defines a `Config` custom resource which can be used to generate multiple ConfigMaps using a template 
 (it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
 a Cloud-dependent provider for the example.
+
+```yaml
+apiVersion: ngergs.de/v1alpha1
+kind: Config
+metadata:
+  name: example-configs
+  namespace: test
+spec:
+  template: Hello {world}, it's {timeOfDay}
+  valueSets:
+    - name: morning
+      values:
+        world: world
+        timeOfDay: morning
+    - name: evening
+      values:
+        world: world
+        timeOfDay: evening
+```
 
 ## Most relevant Rust files
 
