@@ -1,10 +1,11 @@
 use crate::crossplane::Resource;
+use crate::errors::error_invalid_data;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use k8s_openapi::Metadata;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use serde_json::Value;
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 
 /// `TryFromResource` handles type mapping via serde.
 /// All trait functions have default implementations that should be sufficient for common use cases.
@@ -24,10 +25,9 @@ pub trait TryFromResource: Sized + DeserializeOwned {
     /// - If unmarshalling the type-fixed JSON representation to the target type fails.
     /// - On any mapping incompatibility between the types.
     fn try_from_resource(value: Resource) -> Result<Self, Error> {
-        let resource = value.resource.ok_or(Error::new(
-            ErrorKind::InvalidData,
-            ".resource field not set",
-        ))?;
+        let resource = value
+            .resource
+            .ok_or(error_invalid_data(".resource field not set"))?;
 
         let mut value = serde_json::to_value(&resource)?;
         json_value_cast_float_to_i64(&mut value);
@@ -44,8 +44,7 @@ pub trait TryIntoResource: Sized + Serialize {
     fn try_into_resource(self) -> Result<Resource, Error> {
         let obj_json = serde_json::to_value(self)?;
         let Value::Object(_) = &obj_json else {
-            return Err(Error::new(
-                ErrorKind::InvalidData,
+            return Err(error_invalid_data(
                 "expected structured object as Kubernetes resource",
             ));
         };

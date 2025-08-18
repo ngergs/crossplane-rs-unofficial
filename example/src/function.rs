@@ -1,18 +1,16 @@
 use crate::composite_resource::Config;
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
-use crossplane_rust_sdk_unofficial::crossplane::{
-    ResponseMeta, RunFunctionRequest, RunFunctionResponse,
-};
-use crossplane_rust_sdk_unofficial::prost_types::Duration;
-use crossplane_rust_sdk_unofficial::tonic;
+use crossplane_rust_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+use crossplane_rust_sdk_unofficial::errors::error_invalid_data;
 use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rust_sdk_unofficial::tracing::info;
+use crossplane_rust_sdk_unofficial::{to_response_meta, tonic};
 use crossplane_rust_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use kube::Resource;
 use std::collections::{BTreeMap, HashMap};
-use std::io::{Error, ErrorKind};
+use std::io::Error;
 
 pub struct ExampleFunction {}
 
@@ -24,17 +22,15 @@ impl FunctionRunnerService for ExampleFunction {
         request: Request<RunFunctionRequest>,
     ) -> Result<Response<RunFunctionResponse>, Status> {
         let request = request.into_inner();
-        let observed = request.observed.ok_or(Error::new(
-            ErrorKind::InvalidData,
-            "composite resource field not set",
-        ))?;
+        let observed = request
+            .observed
+            .ok_or(error_invalid_data("composite resource field not set"))?;
         let config = Config::try_from_resource(
             observed
                 .composite
-                .ok_or(Error::new(ErrorKind::InvalidData, "resource not set"))?,
+                .ok_or(error_invalid_data("resource not set"))?,
         )?;
-        let namespace = config.meta().namespace.clone().ok_or(Error::new(
-            ErrorKind::InvalidData,
+        let namespace = config.meta().namespace.clone().ok_or(error_invalid_data(
             "composite metadata.namespace field not set",
         ))?;
         info!(
@@ -77,19 +73,10 @@ impl FunctionRunnerService for ExampleFunction {
             desired.resources.insert(value_set.name, desired_res);
         }
         let result = RunFunctionResponse {
-            meta: request.meta.map(|meta| ResponseMeta {
-                tag: meta.tag, // required by the spec to copy this from the request without modification
-                ttl: Some(Duration {
-                    seconds: 60,
-                    nanos: 0,
-                }), // time the result can be cached. SHOULD be set.
-            }),
+            meta: to_response_meta(request.meta, 60),
             desired: Some(desired),
             context: request.context,
-            results: vec![],
-            requirements: None,
-            conditions: vec![],
-            output: None,
+            ..Default::default()
         };
 
         Ok(result.into())

@@ -4,11 +4,13 @@ pub use tokio;
 pub use tonic;
 pub use tracing;
 
+pub use map_meta::to_response_meta;
 pub use map_resource::{TryFromResource, TryIntoResource};
 
-pub mod server;
-
+pub mod errors;
+mod map_meta;
 mod map_resource;
+pub mod server;
 
 #[allow(clippy::all, clippy::pedantic, clippy::nursery)]
 // Just include the crossplane types generated via tonic-build (see ../build.rs)
