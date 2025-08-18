@@ -1,7 +1,7 @@
 use crate::composite_resource::Config;
 use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rust_sdk_unofficial::crossplane::{
-    Ready, ResponseMeta, RunFunctionRequest, RunFunctionResponse,
+    ResponseMeta, RunFunctionRequest, RunFunctionResponse,
 };
 use crossplane_rust_sdk_unofficial::prost_types::Duration;
 use crossplane_rust_sdk_unofficial::tonic;
@@ -69,13 +69,8 @@ impl FunctionRunnerService for ExampleFunction {
             };
             let ready = observed_conf
                 .get(&value_set.name)
-                .map_or(Ready::False, |observed_conf| {
-                    if observed_conf.data == conf.data {
-                        Ready::True
-                    } else {
-                        Ready::False
-                    }
-                });
+                .is_some_and(|observed_conf| observed_conf.data == conf.data)
+                .into();
 
             let mut desired_res = conf.try_into_resource()?;
             desired_res.set_ready(ready);

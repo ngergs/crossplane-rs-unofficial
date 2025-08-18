@@ -14,4 +14,13 @@ mod map_resource;
 // Just include the crossplane types generated via tonic-build (see ../build.rs)
 pub mod crossplane {
     include!("generated/apiextensions.r#fn.proto.v1.rs");
+
+    impl From<bool> for Ready {
+        fn from(value: bool) -> Self {
+            match value {
+                true => Ready::True,
+                false => Ready::False,
+            }
+        }
+    }
 }
