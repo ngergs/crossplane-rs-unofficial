@@ -28,7 +28,6 @@ spec:
 ## Most relevant Rust files
 
 - The core logic of the composite function can be found in [src/function.rs](src/function.rs).
-- The input and output mappings are in [src/lib.rs](src/lib.rs).
 
 ## Compile-time dependencies
 
