@@ -71,9 +71,9 @@ impl FunctionRunnerService for ExampleFunction {
         }
 
         let result = RunFunctionResponse {
+            context: request.context,
             meta: to_response_meta(request.meta, 60),
             desired: Some(desired),
-            context: request.context,
             ..Default::default()
         };
         Ok(result.into())
