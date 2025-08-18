@@ -30,16 +30,10 @@ impl FunctionRunnerService for ExampleFunction {
                 .composite
                 .ok_or(error_invalid_data("resource not set"))?,
         )?;
+        log_request(&config);
         let namespace = config.meta().namespace.clone().ok_or(error_invalid_data(
             "composite metadata.namespace field not set",
         ))?;
-        info!(
-            api_version = Config::api_version(&()).into_owned(),
-            kind = Config::kind(&()).into_owned(),
-            name = config.meta().name,
-            namespace = config.meta().namespace,
-            "Received request"
-        );
         let observed_conf = observed
             .resources
             .into_iter()
@@ -48,7 +42,10 @@ impl FunctionRunnerService for ExampleFunction {
             .into_iter()
             .collect::<HashMap<_, ConfigMap>>();
 
-        let mut desired = request.desired.unwrap_or_default(); // MUST pass through any desired state we do not care about
+        // MUST pass through any desired state we do not care about
+        let mut desired = request.desired.unwrap_or_default();
+        // main logic. Go through the template and value sets, template the configmaps
+        // and compare with the observed ones.
         for value_set in config.spec.value_sets {
             let mut value = config.spec.template.clone();
             for (k, v) in &value_set.values {
@@ -72,13 +69,23 @@ impl FunctionRunnerService for ExampleFunction {
             desired_res.set_ready(ready);
             desired.resources.insert(value_set.name, desired_res);
         }
+
         let result = RunFunctionResponse {
             meta: to_response_meta(request.meta, 60),
             desired: Some(desired),
             context: request.context,
             ..Default::default()
         };
-
         Ok(result.into())
     }
+}
+
+fn log_request(config: &Config) {
+    info!(
+        api_version = Config::api_version(&()).into_owned(),
+        kind = Config::kind(&()).into_owned(),
+        name = config.meta().name,
+        namespace = config.meta().namespace,
+        "Received request"
+    );
 }

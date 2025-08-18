@@ -11,7 +11,6 @@ pub mod composite_resource {
     use crossplane_rust_sdk_unofficial::TryFromResource;
 
     include!("generated/xrd.rs");
-
     impl TryFromResource for Config {}
 }
 
