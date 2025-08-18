@@ -22,18 +22,12 @@ pub trait TryFromResource: Sized + DeserializeOwned {
     /// - If the .resource field is `None`.
     /// - If marshalling the `resource` to an intermediate JSON representation fails.
     /// - If unmarshalling the type-fixed JSON representation to the target type fails.
-    ///
-    /// # Errors
-    /// - If the Option is `None`.
     /// - On any mapping incompatibility between the types.
-    fn try_from_resource(value: Option<Resource>) -> Result<Self, Error> {
-        let resource = value
-            .ok_or(Error::new(ErrorKind::InvalidData, "resource not set"))?
-            .resource
-            .ok_or(Error::new(
-                ErrorKind::InvalidData,
-                ".resource field not set",
-            ))?;
+    fn try_from_resource(value: Resource) -> Result<Self, Error> {
+        let resource = value.resource.ok_or(Error::new(
+            ErrorKind::InvalidData,
+            ".resource field not set",
+        ))?;
 
         let mut value = serde_json::to_value(&resource)?;
         json_value_cast_float_to_i64(&mut value);

@@ -28,7 +28,11 @@ impl FunctionRunnerService for ExampleFunction {
             ErrorKind::InvalidData,
             "composite resource field not set",
         ))?;
-        let config = Config::try_from_resource(observed.composite)?;
+        let config = Config::try_from_resource(
+            observed
+                .composite
+                .ok_or(Error::new(ErrorKind::InvalidData, "resource not set"))?,
+        )?;
         let namespace = config.meta().namespace.clone().ok_or(Error::new(
             ErrorKind::InvalidData,
             "composite metadata.namespace field not set",
@@ -43,9 +47,7 @@ impl FunctionRunnerService for ExampleFunction {
         let observed_conf = observed
             .resources
             .into_iter()
-            .map(|(name, resource)| {
-                Ok::<_, Error>((name, ConfigMap::try_from_resource(Some(resource))?))
-            })
+            .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .collect::<HashMap<_, ConfigMap>>();
