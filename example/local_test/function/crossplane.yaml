@@ -1,10 +1,10 @@
 apiVersion: meta.pkg.crossplane.io/v1beta1
 kind: Function
 metadata:
-  name: crossplane-rust-config
+  name: crossplane-rs-config
   annotations:
     meta.crossplane.io/maintainer: ngergs
-    meta.crossplane.io/source: github.com/ngergs/crossplane-rust-example
+    meta.crossplane.io/source: github.com/ngergs/crossplane-rs-example
     meta.crossplane.io/license: MIT
     meta.crossplane.io/description: Example for a Rust templating composition function
     meta.crossplane.io/readme: |

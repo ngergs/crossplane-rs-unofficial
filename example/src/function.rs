@@ -1,11 +1,11 @@
 use crate::composite_resource::Config;
-use crossplane_rust_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
-use crossplane_rust_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
-use crossplane_rust_sdk_unofficial::errors::error_invalid_data;
-use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
-use crossplane_rust_sdk_unofficial::tracing::info;
-use crossplane_rust_sdk_unofficial::{into_response_meta, take_from_observed_composite, tonic};
-use crossplane_rust_sdk_unofficial::{TryFromResource, TryIntoResource};
+use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+use crossplane_rs_sdk_unofficial::errors::error_invalid_data;
+use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
+use crossplane_rs_sdk_unofficial::tracing::info;
+use crossplane_rs_sdk_unofficial::{into_response_meta, take_from_observed_composite, tonic};
+use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use kube::Resource;

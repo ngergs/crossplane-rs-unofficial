@@ -20,15 +20,15 @@ for cmd in $executables; do
 done
 
 
-docker build -t crossplane-rust-config-fn -f ../Dockerfile ../..
+docker build -t crossplane-rs-config-fn -f ../Dockerfile ../..
 
 k3d cluster create --config k3d.yaml
 export REGISTRY="k3d-crossplane.localhost:5000"
 CONTEXT="k3d-crossplane"
 
-export FN_IMAGE="crossplane-rust-config-fn"
+export FN_IMAGE="crossplane-rs-config-fn"
 export FN_TAG="v0.1.0"
-export CONF_IMAGE="crossplane-rust-config"
+export CONF_IMAGE="crossplane-rs-config"
 export CONF_TAG="v0.1.0"
 crossplane xpkg build --package-root=function --embed-runtime-image=${FN_IMAGE} --package-file=fn.xpkg
 # registry might not be ready yet

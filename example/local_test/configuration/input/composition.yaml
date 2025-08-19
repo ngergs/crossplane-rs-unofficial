@@ -10,4 +10,4 @@ spec:
   pipeline:
     - step: create-config
       functionRef:
-        name: crossplane-rust-config-fn
+        name: crossplane-rs-config-fn

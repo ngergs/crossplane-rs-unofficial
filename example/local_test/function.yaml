@@ -1,7 +1,7 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
-  name: crossplane-rust-config-fn
+  name: crossplane-rs-config-fn
   annotations:
     render.crossplane.io/runtime: Development
 spec:
