@@ -1,4 +1,4 @@
-use crate::crossplane::Resource;
+use crate::crossplane::{Resource, RunFunctionRequest};
 use crate::errors::error_invalid_data;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use k8s_openapi::Metadata;
@@ -6,6 +6,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 use serde_json::Value;
 use std::io::Error;
+use std::mem::take;
 
 /// `TryFromResource` handles type mapping via serde.
 /// All trait functions have default implementations that should be sufficient for common use cases.
@@ -29,7 +30,7 @@ pub trait TryFromResource: Sized + DeserializeOwned {
             .resource
             .ok_or(error_invalid_data(".resource field not set"))?;
 
-        let mut value = serde_json::to_value(&resource)?;
+        let mut value = serde_json::to_value(resource)?;
         json_value_cast_float_to_i64(&mut value);
         Ok(serde_json::from_value(value)?)
     }
@@ -60,6 +61,23 @@ pub trait TryIntoResource: Sized + Serialize {
 impl<T> TryFromResource for T where T: DeserializeOwned + Metadata<Ty = ObjectMeta> {}
 
 impl<T> TryIntoResource for T where T: Serialize + Metadata<Ty = ObjectMeta> {}
+
+/// This takes(!) the `observed.composite` field and returns it deserialization into a `T`-fails.
+///
+/// # Errors
+/// - If `observed` is `None`
+/// - If `observed.composite` is `None`
+/// - If the deserialization into the `T`-struct fails.
+pub fn take_from_observed_composite<T: TryFromResource>(
+    request: &mut RunFunctionRequest,
+) -> Result<T, Error> {
+    let observed = request
+        .observed
+        .as_mut()
+        .ok_or(error_invalid_data("`observed` is `None`"))?;
+    let composite = take(&mut observed.composite);
+    T::try_from_resource(composite.ok_or(error_invalid_data("`observed.composite` is `None`"))?)
+}
 
 /// This function traverses the json value and tries to cast all float values to i64 values. It only changes those where the cast succeeds without data loss.
 fn json_value_cast_float_to_i64(val: &mut Value) {

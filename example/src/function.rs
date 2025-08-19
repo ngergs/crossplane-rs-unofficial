@@ -4,7 +4,7 @@ use crossplane_rust_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunction
 use crossplane_rust_sdk_unofficial::errors::error_invalid_data;
 use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rust_sdk_unofficial::tracing::info;
-use crossplane_rust_sdk_unofficial::{into_response_meta, tonic};
+use crossplane_rust_sdk_unofficial::{into_response_meta, take_from_observed_composite, tonic};
 use crossplane_rust_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
@@ -21,20 +21,16 @@ impl FunctionRunnerService for ExampleFunction {
         &self,
         request: Request<RunFunctionRequest>,
     ) -> Result<Response<RunFunctionResponse>, Status> {
-        let request = request.into_inner();
-        let observed = request
-            .observed
-            .ok_or(error_invalid_data("composite resource field not set"))?;
-        let config = Config::try_from_resource(
-            observed
-                .composite
-                .ok_or(error_invalid_data("resource not set"))?,
-        )?;
+        let mut request = request.into_inner();
+        let config = take_from_observed_composite(&mut request)?;
         log_request(&config);
         let namespace = config.meta().namespace.clone().ok_or(error_invalid_data(
             "composite metadata.namespace field not set",
         ))?;
-        let observed_conf = observed
+
+        let observed_conf = request
+            .observed
+            .unwrap_or_default()
             .resources
             .into_iter()
             .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
