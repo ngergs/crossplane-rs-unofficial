@@ -4,7 +4,7 @@ use crossplane_rust_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunction
 use crossplane_rust_sdk_unofficial::errors::error_invalid_data;
 use crossplane_rust_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rust_sdk_unofficial::tracing::info;
-use crossplane_rust_sdk_unofficial::{to_response_meta, tonic};
+use crossplane_rust_sdk_unofficial::{into_response_meta, tonic};
 use crossplane_rust_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
@@ -72,7 +72,7 @@ impl FunctionRunnerService for ExampleFunction {
 
         let result = RunFunctionResponse {
             context: request.context,
-            meta: to_response_meta(request.meta, 60),
+            meta: into_response_meta(request.meta, 60),
             desired: Some(desired),
             ..Default::default()
         };

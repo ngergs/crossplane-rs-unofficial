@@ -4,7 +4,7 @@ pub use tokio;
 pub use tonic;
 pub use tracing;
 
-pub use map_meta::to_response_meta;
+pub use map_meta::into_response_meta;
 pub use map_resource::{TryFromResource, TryIntoResource};
 
 pub mod errors;
