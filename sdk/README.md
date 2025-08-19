@@ -9,8 +9,9 @@ variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Most relevant Rust files
 
-- The crossplane files are generated from the protobuf schema and included in `src/lib.rs`(src/lib.rs).
-- The grpc server setup is defined in `src/server.rs`.
+- The crossplane files are generated from the protobuf schema and included in [src/lib.rs](src/lib.rs).
+- The grpc server setup is defined in [src/server.rs](src/server.rs).
+- The most relevant trait implementations to map received crossplane protobuf Resources (basically `prost_wkt_types::Struct` for us) into typed Rust structs.
 
 ## Compile-time dependencies
 
