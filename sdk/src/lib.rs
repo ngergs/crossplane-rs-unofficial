@@ -5,7 +5,7 @@ pub use tonic;
 pub use tracing;
 
 pub use map_meta::into_response_meta;
-pub use map_resource::{take_from_observed_composite, TryFromResource, TryIntoResource};
+pub use map_resource::{TryFromOptionResource, TryFromResource, TryIntoResource};
 
 pub mod errors;
 mod map_meta;
