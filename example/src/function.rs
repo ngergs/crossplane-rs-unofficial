@@ -4,7 +4,7 @@ use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionRe
 use crossplane_rs_sdk_unofficial::errors::error_invalid_data;
 use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rs_sdk_unofficial::tracing::info;
-use crossplane_rs_sdk_unofficial::{into_response_meta, tonic, TryFromOptionResource};
+use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta, TryFromOptionResource};
 use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
@@ -24,7 +24,7 @@ impl FunctionRunnerService for ExampleFunction {
         let request = request.into_inner();
         let observed = request.observed.unwrap_or_default();
         let config = Config::try_from_option_resource(observed.composite)?;
-        // MUST pass through any desired state we do not care about
+        // must pass through any desired state we do not care about
         let mut desired = request.desired.unwrap_or_default();
         log_request(&config);
 
@@ -68,7 +68,7 @@ impl FunctionRunnerService for ExampleFunction {
 
         let result = RunFunctionResponse {
             context: request.context,
-            meta: into_response_meta(request.meta, 60),
+            meta: Some(request.meta.into_response_meta(60)),
             desired: Some(desired),
             ..Default::default()
         };
