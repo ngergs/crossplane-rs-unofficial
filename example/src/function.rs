@@ -1,6 +1,6 @@
 use crate::composite_resource::Config;
 use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
-use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
 use crossplane_rs_sdk_unofficial::errors::error_invalid_data;
 use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rs_sdk_unofficial::tracing::info;
@@ -8,7 +8,7 @@ use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta, TryFromOptionResourc
 use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
-use kube::Resource;
+use kube::Resource as KubeResource;
 use std::collections::{BTreeMap, HashMap};
 use std::io::Error;
 
@@ -24,18 +24,10 @@ impl FunctionRunnerService for ExampleFunction {
         let request = request.into_inner();
         let observed = request.observed.unwrap_or_default();
         let config = Config::try_from_option_resource(observed.composite)?;
+        log_request(&config);
         // must pass through any desired state we do not care about
         let mut desired = request.desired.unwrap_or_default();
-        log_request(&config);
-
-        // Get a representation of the ConfigMaps observed in the cluster
-        let observed_configmaps = observed
-            .resources
-            .into_iter()
-            .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
-            .collect::<Result<Vec<_>, _>>()?
-            .into_iter()
-            .collect::<HashMap<_, ConfigMap>>();
+        let observed_configmaps = resources_into_configmaps(observed.resources)?;
 
         // main logic. Go through the template and value sets, template the desired configmaps
         // and compare with the observed ones to determine whether they are ready.
@@ -76,6 +68,7 @@ impl FunctionRunnerService for ExampleFunction {
     }
 }
 
+/// Logs the request metadata (`api_version,kind,name,namespace`) of the composite resource on `INFO` level.
 fn log_request(config: &Config) {
     info!(
         api_version = Config::api_version(&()).into_owned(),
@@ -84,4 +77,114 @@ fn log_request(config: &Config) {
         namespace = config.meta().namespace,
         "Received request"
     );
+}
+
+/// Gets the observed/desired configmaps from the observed/desired resources.
+fn resources_into_configmaps(
+    resources: HashMap<String, Resource>,
+) -> Result<HashMap<String, ConfigMap>, Error> {
+    Ok(resources
+        .into_iter()
+        .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
+        .collect::<Result<Vec<_>, _>>()?
+        .into_iter()
+        .collect::<HashMap<_, ConfigMap>>())
+}
+
+#[cfg(test)]
+mod test {
+    use crate::composite_resource::{Config, ConfigSpec, ConfigValueSets};
+    use crate::function::{resources_into_configmaps, ExampleFunction};
+    use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+    use crossplane_rs_sdk_unofficial::crossplane::{RequestMeta, RunFunctionRequest, State};
+    use crossplane_rs_sdk_unofficial::tonic::Request;
+    use crossplane_rs_sdk_unofficial::{tokio, TryIntoResource};
+    use k8s_openapi::api::core::v1::ConfigMap;
+    use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
+    use std::collections::{BTreeMap, HashMap};
+
+    struct TestCase {
+        composite: Config,
+        expected_desired: HashMap<String, ConfigMap>,
+    }
+
+    #[tokio::test]
+    async fn composite_function() {
+        let namespace = "testspace";
+        let tcs = vec![TestCase {
+            composite: Config {
+                metadata: namespaced_name_meta("name", namespace),
+                spec: ConfigSpec {
+                    template: "Hello world, it's {time of day}".to_owned(),
+                    value_sets: vec![
+                        ConfigValueSets {
+                            name: "morning".to_owned(),
+                            values: BTreeMap::from([(
+                                "time of day".to_owned(),
+                                "morning".to_owned(),
+                            )]),
+                        },
+                        ConfigValueSets {
+                            name: "evening".to_owned(),
+                            values: BTreeMap::from([(
+                                "time of day".to_owned(),
+                                "evening".to_owned(),
+                            )]),
+                        },
+                    ],
+                },
+            },
+            expected_desired: HashMap::from([
+                (
+                    "morning".to_owned(),
+                    config_map("morning", namespace, "Hello world, it's morning"),
+                ),
+                (
+                    "evening".to_owned(),
+                    config_map("evening", namespace, "Hello world, it's evening"),
+                ),
+            ]),
+        }];
+
+        for tc in tcs {
+            let req = RunFunctionRequest {
+                meta: Some(RequestMeta {
+                    tag: "123".to_owned(),
+                }),
+                observed: Some(State {
+                    composite: Some(tc.composite.try_into_resource().unwrap()),
+                    ..Default::default()
+                }),
+                ..Default::default()
+            };
+            let composite_fn = ExampleFunction {};
+            let rsp = composite_fn
+                .run_function(Request::new(req))
+                .await
+                .unwrap()
+                .into_inner();
+            let desired =
+                resources_into_configmaps(rsp.desired.unwrap_or_default().resources).unwrap();
+            assert_eq!(tc.expected_desired, desired);
+        }
+    }
+
+    /// Creates an `ObjectMeta` that just holds name and namespace information
+    fn namespaced_name_meta(name: &str, namespace: &str) -> ObjectMeta {
+        ObjectMeta {
+            name: Some(name.to_owned()),
+            namespace: Some(namespace.to_owned()),
+            ..Default::default()
+        }
+    }
+
+    /// Constructs a `ConfigMap` in the format used for this example.
+    /// I.e. one that just has one key `value` with the provided value as content.
+    fn config_map(name: &str, namespace: &str, value: &str) -> ConfigMap {
+        ConfigMap {
+            metadata: namespaced_name_meta(name, namespace),
+            data: Some(BTreeMap::from([("value".to_owned(), value.to_owned())])),
+            ..Default::default()
+        }
+    }
 }

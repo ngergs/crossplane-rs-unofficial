@@ -4,6 +4,7 @@ metadata:
   name: example-configs
   namespace: test
   generation: 3
+  uid: "abc"
 spec:
   template: Hello {world}, it's {timeOfDay}
   valueSets:
