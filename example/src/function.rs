@@ -147,9 +147,10 @@ mod test {
         }];
 
         for tc in tcs {
+            let tag = "123";
             let req = RunFunctionRequest {
                 meta: Some(RequestMeta {
-                    tag: "123".to_owned(),
+                    tag: tag.to_owned(),
                 }),
                 observed: Some(State {
                     composite: Some(tc.composite.try_into_resource().unwrap()),
@@ -166,6 +167,7 @@ mod test {
             let desired =
                 resources_into_configmaps(rsp.desired.unwrap_or_default().resources).unwrap();
             assert_eq!(tc.expected_desired, desired);
+            assert_eq!(tag, rsp.meta.unwrap_or_default().tag);
         }
     }
 
