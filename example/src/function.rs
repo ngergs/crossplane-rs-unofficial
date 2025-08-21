@@ -135,14 +135,8 @@ mod test {
                 },
             },
             expected_desired: HashMap::from([
-                (
-                    "morning".to_owned(),
-                    config_map("morning", namespace, "Hello world, it's morning"),
-                ),
-                (
-                    "evening".to_owned(),
-                    config_map("evening", namespace, "Hello world, it's evening"),
-                ),
+                config_map_desired_entry("morning", namespace, "Hello world, it's morning"),
+                config_map_desired_entry("evening", namespace, "Hello world, it's evening"),
             ]),
         }];
 
@@ -182,11 +176,15 @@ mod test {
 
     /// Constructs a `ConfigMap` in the format used for this example.
     /// I.e. one that just has one key `value` with the provided value as content.
-    fn config_map(name: &str, namespace: &str, value: &str) -> ConfigMap {
-        ConfigMap {
-            metadata: namespaced_name_meta(name, namespace),
-            data: Some(BTreeMap::from([("value".to_owned(), value.to_owned())])),
-            ..Default::default()
-        }
+    /// It outputs it as a HashMap-Entry for the desired state.
+    fn config_map_desired_entry(name: &str, namespace: &str, value: &str) -> (String, ConfigMap) {
+        (
+            name.to_owned(),
+            ConfigMap {
+                metadata: namespaced_name_meta(name, namespace),
+                data: Some(BTreeMap::from([("value".to_owned(), value.to_owned())])),
+                ..Default::default()
+            },
+        )
     }
 }
