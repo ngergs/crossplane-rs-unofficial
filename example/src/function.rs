@@ -117,20 +117,8 @@ mod test {
                 spec: ConfigSpec {
                     template: "Hello world, it's {time of day}".to_owned(),
                     value_sets: vec![
-                        ConfigValueSets {
-                            name: "morning".to_owned(),
-                            values: BTreeMap::from([(
-                                "time of day".to_owned(),
-                                "morning".to_owned(),
-                            )]),
-                        },
-                        ConfigValueSets {
-                            name: "evening".to_owned(),
-                            values: BTreeMap::from([(
-                                "time of day".to_owned(),
-                                "evening".to_owned(),
-                            )]),
-                        },
+                        config_value_set("morning", [("time of day", "morning")]),
+                        config_value_set("evening", [("time of day", "evening")]),
                     ],
                 },
             },
@@ -171,6 +159,17 @@ mod test {
             name: Some(name.to_owned()),
             namespace: Some(namespace.to_owned()),
             ..Default::default()
+        }
+    }
+
+    /// Constructs a `ConfigValueSet`, i.e. a mapping of values two values used by `Config`
+    fn config_value_set<const N: usize>(name: &str, kv: [(&str, &str); N]) -> ConfigValueSets {
+        ConfigValueSets {
+            name: name.to_owned(),
+            values: kv
+                .into_iter()
+                .map(|(k, v)| (k.to_owned(), v.to_owned()))
+                .collect::<BTreeMap<_, _>>(),
         }
     }
 
