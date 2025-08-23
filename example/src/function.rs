@@ -88,7 +88,7 @@ fn resources_into_configmaps(
         .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
         .collect::<Result<Vec<_>, _>>()?
         .into_iter()
-        .collect::<HashMap<_, ConfigMap>>())
+        .collect())
 }
 
 #[cfg(test)]
@@ -169,7 +169,7 @@ mod test {
             values: kv
                 .into_iter()
                 .map(|(k, v)| (k.to_owned(), v.to_owned()))
-                .collect::<BTreeMap<_, _>>(),
+                .collect(),
         }
     }
 
