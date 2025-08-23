@@ -83,12 +83,10 @@ fn log_request(config: &Config) {
 fn resources_into_configmaps(
     resources: HashMap<String, Resource>,
 ) -> Result<HashMap<String, ConfigMap>, Error> {
-    Ok(resources
+    resources
         .into_iter()
         .map(|(name, resource)| Ok::<_, Error>((name, ConfigMap::try_from_resource(resource)?)))
-        .collect::<Result<Vec<_>, _>>()?
-        .into_iter()
-        .collect())
+        .collect()
 }
 
 #[cfg(test)]
