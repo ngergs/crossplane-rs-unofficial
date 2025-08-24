@@ -44,6 +44,37 @@ fn cert_from_dir(
 /// - If the tcp port 9443 cannot be claimed.
 /// - If cli arguments are malformed.
 /// - If referenced tls certificate files are missing or have malformed content.
+///
+/// # Examples
+///
+/// ```
+/// # use tonic::{Request, Response, Status};
+/// # use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+/// # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};///
+/// # use crossplane_rs_sdk_unofficial::{run_server, IntoResponseMeta};
+///
+/// struct ExampleFunction{}
+///
+/// #[tonic::async_trait]
+/// impl FunctionRunnerService for ExampleFunction {
+///    async fn run_function(
+///        &self,
+///       request: Request<RunFunctionRequest>,
+///    ) -> Result<Response<RunFunctionResponse>, Status> {
+///   let request = request.into_inner();
+///   // Business logic goes here
+///   Ok(RunFunctionResponse {
+///             context: request.context,
+///             meta: Some(request.meta.into_response_meta(60)),
+///             desired: request.desired,
+///             ..Default::default()
+///     }.into())
+///   }
+/// }
+///
+/// // need to await in actual code
+/// run_server(ExampleFunction{});
+/// ```
 pub async fn run_server(f: impl FunctionRunnerService) -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
