@@ -1,4 +1,3 @@
-pub use prost_types;
 pub use tokio;
 pub use tonic;
 pub use tracing;
