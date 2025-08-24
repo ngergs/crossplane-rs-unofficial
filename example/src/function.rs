@@ -4,7 +4,7 @@ use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, Run
 use crossplane_rs_sdk_unofficial::error::error_invalid_data;
 use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rs_sdk_unofficial::tracing::info;
-use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta, TryFromOptionResource};
+use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta};
 use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;

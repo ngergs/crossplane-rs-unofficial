@@ -4,10 +4,11 @@ pub use tonic;
 pub use tracing;
 
 pub use map_meta::IntoResponseMeta;
-pub use map_resource::{TryFromOptionResource, TryFromResource, TryIntoResource};
+pub use map_resource::{TryFromResource, TryIntoResource};
 
 pub mod error;
 mod map_meta;
+
 mod map_resource;
 pub mod server;
 
