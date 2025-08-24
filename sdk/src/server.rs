@@ -36,9 +36,13 @@ fn cert_from_dir(
     )?))
 }
 
-/// Starts the grpc server and handles sigterm/sigint for shutdown
+/// Reads the cli arguments, configures and starts the grpc server and handles sigterm/sigint for shutdown.
+/// Calls the provided `FunctionRunnerService`-impl for the core business logic of the composite function.
+/// The cli follows the [official composite function spec](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
+///
 /// # Errors
 /// - If the tcp port 9443 cannot be claimed.
+/// - If cli arguments are malformed.
 /// - If referenced tls certificate files are missing or have malformed content.
 pub async fn run_server(f: impl FunctionRunnerService) -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
