@@ -52,7 +52,6 @@ fn cert_from_dir(
 /// # use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 /// # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};///
 /// # use crossplane_rs_sdk_unofficial::{run_server, IntoResponseMeta};
-///
 /// struct ExampleFunction{}
 ///
 /// #[tonic::async_trait]
