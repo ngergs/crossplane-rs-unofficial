@@ -3,7 +3,7 @@
 Run the local rust composite function in insecure mode (in the folder above)
 
 ```bash
-cargo run --package crossplane-rs-example-unofficial -- --tls-certs-dir . --insecure
+cargo run -- --tls-certs-dir . --insecure
 ```
 
 and then execute the crossplane local rendering (here)
