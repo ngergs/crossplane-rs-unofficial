@@ -1,6 +1,5 @@
 use crate::function::ExampleFunction;
-use crossplane_rs_sdk_unofficial::server::run_server;
-use crossplane_rs_sdk_unofficial::tokio;
+use crossplane_rs_sdk_unofficial::{run_server, tokio};
 
 pub mod function;
 
