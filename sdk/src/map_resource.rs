@@ -1,5 +1,5 @@
 use crate::crossplane::Resource;
-use crate::errors::error_invalid_data;
+use crate::error::error_invalid_data;
 #[cfg(feature = "k8s-openapi")]
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 #[cfg(feature = "k8s-openapi")]

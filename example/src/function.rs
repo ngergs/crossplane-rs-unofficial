@@ -1,7 +1,7 @@
 use crate::composite_resource::Config;
 use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
-use crossplane_rs_sdk_unofficial::errors::error_invalid_data;
+use crossplane_rs_sdk_unofficial::error::error_invalid_data;
 use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rs_sdk_unofficial::tracing::info;
 use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta, TryFromOptionResource};
