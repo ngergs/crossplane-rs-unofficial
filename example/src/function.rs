@@ -1,7 +1,6 @@
 use crate::composite_resource::Config;
 use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
-use crossplane_rs_sdk_unofficial::error::error_invalid_data;
 use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
 use crossplane_rs_sdk_unofficial::tracing::info;
 use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta};
@@ -11,6 +10,7 @@ use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use kube::Resource as KubeResource;
 use std::collections::{BTreeMap, HashMap};
 use std::io::Error;
+use std::io::ErrorKind::InvalidData;
 
 pub struct ExampleFunction {}
 
@@ -31,7 +31,8 @@ impl FunctionRunnerService for ExampleFunction {
 
         // main logic. Go through the template and value sets, template the desired configmaps
         // and compare with the observed ones to determine whether they are ready.
-        let namespace = config.meta().namespace.clone().ok_or(error_invalid_data(
+        let namespace = config.meta().namespace.clone().ok_or(Error::new(
+            InvalidData,
             "composite metadata.namespace field not set",
         ))?;
         for value_set in config.spec.value_sets {
