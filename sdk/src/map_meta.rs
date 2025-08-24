@@ -1,6 +1,7 @@
 use crate::crossplane::{RequestMeta, ResponseMeta};
 use prost_types::Duration;
 
+/// Marker trait to seal other traits so that they can't be implemented by other traits.
 trait Seal {}
 
 /// Allows transforming this object into a `response_meta` object.
