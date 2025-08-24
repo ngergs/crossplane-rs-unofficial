@@ -1,4 +1,3 @@
-pub use k8s_openapi;
 pub use prost_types;
 pub use tokio;
 pub use tonic;

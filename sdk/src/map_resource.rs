@@ -1,6 +1,8 @@
 use crate::crossplane::Resource;
 use crate::errors::error_invalid_data;
+#[cfg(feature = "k8s-openapi")]
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
+#[cfg(feature = "k8s-openapi")]
 use k8s_openapi::Metadata;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -78,8 +80,9 @@ pub trait TryIntoResource: Sized + Serialize {
     }
 }
 
+#[cfg(feature = "k8s-openapi")]
 impl<T> TryFromResource for T where T: DeserializeOwned + Metadata<Ty = ObjectMeta> {}
-
+#[cfg(feature = "k8s-openapi")]
 impl<T> TryIntoResource for T where T: Serialize + Metadata<Ty = ObjectMeta> {}
 
 /// This function traverses the json value and tries to cast all float values to i64 values. It only changes those where the cast succeeds without data loss.
