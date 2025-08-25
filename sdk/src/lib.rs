@@ -21,7 +21,7 @@
 //!             meta: Some(request.meta.into_response_meta(60)),
 //!             desired: request.desired,
 //!             ..Default::default()
-//!         }.into())
+//!         })
 //!     }
 //! }
 //!

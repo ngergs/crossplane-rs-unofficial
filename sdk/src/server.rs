@@ -40,6 +40,27 @@ fn cert_from_dir(
 
 #[async_trait]
 /// Implement this trait to process composite functions, intended to be used with `run_server`.
+///
+/// # Example
+/// ```
+/// # use tonic::Status;
+/// # use crossplane_rs_sdk_unofficial::{CompositeFunction, IntoResponseMeta};
+/// # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+/// struct ExampleFunction{}
+///
+/// #[tonic::async_trait]
+/// impl CompositeFunction for ExampleFunction {
+///     async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+///         // Business logic goes here
+///         Ok(RunFunctionResponse {
+///             context: request.context,
+///             meta: Some(request.meta.into_response_meta(60)),
+///             desired: request.desired,
+///             ..Default::default()
+///         })
+///     }
+/// }
+/// ```
 pub trait CompositeFunction: Send + Sync + 'static {
     /// Process the incoming composite function request.
     async fn run_function(
@@ -87,7 +108,7 @@ where
 ///             meta: Some(request.meta.into_response_meta(60)),
 ///             desired: request.desired,
 ///             ..Default::default()
-///         }.into())
+///         })
 ///     }
 /// }
 ///
