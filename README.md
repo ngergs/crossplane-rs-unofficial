@@ -4,7 +4,7 @@ This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite fu
 
 ## Docs and getting started
 
-You can browse the [rust-docs here](https://ngergs.github.io/crossplane-rs-unofficial/).
+You can browse the [rust-docs](https://ngergs.github.io/crossplane-rs-unofficial/).
 
 See alternatively the [example](example)-subfolder to get started.
 

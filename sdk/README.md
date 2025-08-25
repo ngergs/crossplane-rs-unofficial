@@ -8,7 +8,7 @@ Basically we set up a grpc-server that has to support some custom CLI flags as w
 variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Docs
-You can browse the [rust-docs here](https://ngergs.github.io/crossplane-rs-unofficial/).
+You can browse the [rust-docs](https://ngergs.github.io/crossplane-rs-unofficial/).
 
 ## Most relevant Rust files
 
