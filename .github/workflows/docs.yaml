@@ -28,6 +28,7 @@ jobs:
         run: |-
           sudo apt-get install -y protobuf-compiler
           cd sdk
+          cargo test
           cargo doc --no-deps
           rm target/doc/.lock
           # rust docs have the entry-point one level below the docs root, but relevant styling is in the root and has to be shipped as well

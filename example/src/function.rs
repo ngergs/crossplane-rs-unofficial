@@ -1,9 +1,8 @@
 use crate::composite_resource::Config;
-use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
 use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
-use crossplane_rs_sdk_unofficial::tonic::{Request, Response, Status};
+use crossplane_rs_sdk_unofficial::tonic::Status;
 use crossplane_rs_sdk_unofficial::tracing::info;
-use crossplane_rs_sdk_unofficial::{tonic, IntoResponseMeta};
+use crossplane_rs_sdk_unofficial::{tonic, CompositeFunction, IntoResponseMeta};
 use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
@@ -16,12 +15,11 @@ pub struct ExampleFunction {}
 
 //  The core logic of the composite function goes here
 #[tonic::async_trait]
-impl FunctionRunnerService for ExampleFunction {
+impl CompositeFunction for ExampleFunction {
     async fn run_function(
         &self,
-        request: Request<RunFunctionRequest>,
-    ) -> Result<Response<RunFunctionResponse>, Status> {
-        let request = request.into_inner();
+        request: RunFunctionRequest,
+    ) -> Result<RunFunctionResponse, Status> {
         let observed = request.observed.unwrap_or_default();
         let config = Config::try_from_option_resource(observed.composite)?;
         log_request(&config);
@@ -59,13 +57,12 @@ impl FunctionRunnerService for ExampleFunction {
             desired.resources.insert(value_set.name, desired_configmap);
         }
 
-        let result = RunFunctionResponse {
+        Ok(RunFunctionResponse {
             context: request.context,
             meta: Some(request.meta.into_response_meta(60)),
             desired: Some(desired),
             ..Default::default()
-        };
-        Ok(result.into())
+        })
     }
 }
 

@@ -7,30 +7,27 @@
 //! # Example
 //! ```
 //! # use std::error::Error;
-//! # use tonic::{Request, Response, Status};
-//! # use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+//! # use tonic::Status;
+//! # use crossplane_rs_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
 //! # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
-//! # use crossplane_rs_sdk_unofficial::{run_server, IntoResponseMeta};
 //! struct ExampleFunction{}
 //!
 //! #[tonic::async_trait]
-//! impl FunctionRunnerService for ExampleFunction {
-//!    async fn run_function(&self, request: Request<RunFunctionRequest>)
-//!  -> Result<Response<RunFunctionResponse>, Status> {
-//!     let request = request.into_inner();
-//!     // Business logic goes here
-//!     Ok(RunFunctionResponse {
-//!         context: request.context,
-//!         meta: Some(request.meta.into_response_meta(60)),
-//!         desired: request.desired,
-//!         ..Default::default()
-//!     }.into())
-//!   }
+//! impl CompositeFunction for ExampleFunction {
+//!     async fn run_function(&self, request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+//!         // Business logic goes here
+//!         Ok(RunFunctionResponse {
+//!             context: request.context,
+//!             meta: Some(request.meta.into_response_meta(60)),
+//!             desired: request.desired,
+//!             ..Default::default()
+//!         }.into())
+//!     }
 //! }
 //!
 //! # tokio_test::block_on(async {
 //! #    Ok::<_, Box<dyn Error>>(
-//!   run_server(ExampleFunction{}).await?
+//! run_server(ExampleFunction{}).await?
 //! #    )
 //! # });
 //! ```
@@ -40,7 +37,7 @@ pub use tracing;
 
 pub use map_meta::IntoResponseMeta;
 pub use map_resource::{TryFromResource, TryIntoResource};
-pub use server::run_server;
+pub use server::{run_server, CompositeFunction};
 mod error;
 mod map_meta;
 mod map_resource;

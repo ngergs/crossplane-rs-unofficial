@@ -1,10 +1,12 @@
 use crate::crossplane::function_runner_service_server::{
     FunctionRunnerService, FunctionRunnerServiceServer,
 };
+use crate::crossplane::{RunFunctionRequest, RunFunctionResponse};
 use clap::Parser;
 use std::path::Path;
 use tokio::signal::unix::{signal, SignalKind};
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
+use tonic::{async_trait, Request, Response, Status};
 use tracing::Level;
 
 /// CLI arguments as required by the spec, <https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md>
@@ -36,6 +38,29 @@ fn cert_from_dir(
     )?))
 }
 
+#[async_trait]
+/// Implement this trait to process composite functions, intended to be used with `run_server`.
+pub trait CompositeFunction: Send + Sync + 'static {
+    /// Process the incoming composite function request.
+    async fn run_function(
+        &self,
+        request: RunFunctionRequest,
+    ) -> Result<RunFunctionResponse, Status>;
+}
+
+#[async_trait]
+impl<T> FunctionRunnerService for T
+where
+    T: CompositeFunction,
+{
+    async fn run_function(
+        &self,
+        request: Request<RunFunctionRequest>,
+    ) -> Result<Response<RunFunctionResponse>, Status> {
+        Ok(self.run_function(request.into_inner()).await?.into())
+    }
+}
+
 /// Reads the cli arguments, configures and starts the grpc server and handles sigterm/sigint for shutdown.
 /// Calls the provided `FunctionRunnerService`-impl for the core business logic of the composite function.
 /// The cli follows the [official composite function spec](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
@@ -48,34 +73,31 @@ fn cert_from_dir(
 /// # Examples
 /// ```
 /// # use std::error::Error;
-/// # use tonic::{Request, Response, Status};
-/// # use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+/// # use tonic::Status;
+/// # use crossplane_rs_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
 /// # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
-/// # use crossplane_rs_sdk_unofficial::{run_server, IntoResponseMeta};
 /// struct ExampleFunction{}
 ///
 /// #[tonic::async_trait]
-/// impl FunctionRunnerService for ExampleFunction {
-///    async fn run_function(&self,request: Request<RunFunctionRequest>)
-/// -> Result<Response<RunFunctionResponse>, Status> {
-///     let request = request.into_inner();
-///     // Business logic goes here
-///     Ok(RunFunctionResponse {
-///         context: request.context,
-///         meta: Some(request.meta.into_response_meta(60)),
-///         desired: request.desired,
-///         ..Default::default()
-///     }.into())
-///   }
+/// impl CompositeFunction for ExampleFunction {
+///     async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+///         // Business logic goes here
+///         Ok(RunFunctionResponse {
+///             context: request.context,
+///             meta: Some(request.meta.into_response_meta(60)),
+///             desired: request.desired,
+///             ..Default::default()
+///         }.into())
+///     }
 /// }
 ///
 /// # tokio_test::block_on(async {
 /// #    Ok::<_, Box<dyn Error>>(
-///   run_server(ExampleFunction{}).await?
+/// run_server(ExampleFunction{}).await?
 /// #    )
 /// # });
 /// ```
-pub async fn run_server(f: impl FunctionRunnerService) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn run_server(f: impl CompositeFunction) -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     let mut log_config = tracing_subscriber::fmt().json();
