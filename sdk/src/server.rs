@@ -23,7 +23,7 @@ struct Args {
 
     /// Directory containing mTLS certs (tls.key and tls.crt) and a CA (ca.crt) for client verification
     #[arg(long, env = "TLS_SERVER_CERTS_DIR")]
-    tls_certs_dir: String,
+    tls_certs_dir: Option<String>,
 }
 
 /// Reads a TLS certificate or key from a directory  with the given file name
@@ -88,9 +88,12 @@ pub async fn run_server(f: impl FunctionRunnerService) -> Result<(), Box<dyn std
     let addr = "[::]:9443".parse()?;
     let mut srv = Server::builder();
     if !args.insecure {
-        let ca = cert_from_dir(args.tls_certs_dir.as_str(), "ca.crt")?;
-        let cert = cert_from_dir(args.tls_certs_dir.as_str(), "tls.crt")?;
-        let key = cert_from_dir(args.tls_certs_dir.as_str(), "tls.key")?;
+        let tls_certs_dir = args
+            .tls_certs_dir
+            .ok_or("arg --tls-certs-dir flag is required without --insecure mode")?;
+        let ca = cert_from_dir(&tls_certs_dir, "ca.crt")?;
+        let cert = cert_from_dir(&tls_certs_dir, "tls.crt")?;
+        let key = cert_from_dir(&tls_certs_dir, "tls.key")?;
         let tls_conf = ServerTlsConfig::new()
             .client_ca_root(ca)
             .client_auth_optional(false)
