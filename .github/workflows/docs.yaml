@@ -30,6 +30,8 @@ jobs:
           cd sdk
           cargo doc --no-deps
           rm target/doc/.lock
+          # rust docs have the entry-point one level below the docs root, but relevant styling is in the root and has to be shipped as well
+          echo -n '<meta http-equiv="refresh" content="0;url=crossplane_rs_sdk_unofficial/index.html">' > target/doc/index.html
         env:
           # value not relevant for the docs, just need to be one concrete value for the `k8s-openapi` dependency
           K8S_OPENAPI_ENABLED_VERSION: 1.33
