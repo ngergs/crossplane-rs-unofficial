@@ -2,6 +2,10 @@
 name = "crossplane-rs-example-unofficial"
 version = "0.1.0"
 edition = "2024"
+description = "Example usage of the `crossplane-rs-sdk-unofficial` library (not published to crates.io yet)"
+repository = "https://github.com/ngergs/crossplane-rs-unofficial"
+license = "MIT"
+readme = "README.md"
 
 [lints.clippy]
 pedantic = "warn"

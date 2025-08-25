@@ -2,6 +2,10 @@
 name = "crossplane-rs-sdk-unofficial"
 version = "0.1.0"
 edition = "2024"
+description = "A sdk to write Crossplane composite functions in Rust. Technically composite functions are basically gRPC server."
+repository = "https://github.com/ngergs/crossplane-rs-unofficial"
+license = "MIT"
+readme = "README.md"
 
 [features]
 default = ["k8s-openapi"]
