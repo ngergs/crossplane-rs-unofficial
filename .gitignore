@@ -2,6 +2,3 @@
 **/.idea
 **/*.xpkg
 **/charts
-
-# generated via build.rs
-**/generated/*
