@@ -4,8 +4,10 @@ version = "0.1.0"
 edition = "2024"
 
 [features]
-k8s-openapi = ["dep:k8s-openapi"]
 default = ["k8s-openapi"]
+k8s-openapi = ["dep:k8s-openapi"]
+# exact k8s-openapi feature does not matter but we need to specify for one for building the binary codegen target
+codegen = ["dep:tonic-prost-build", "dep:itertools", "dep:tempfile", "dep:reqwest", "k8s-openapi/v1_33"]
 
 [lints.clippy]
 pedantic = "warn"
@@ -28,9 +30,11 @@ tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["json"] }
 # K8s
 k8s-openapi = { version = "0.25.0", optional = true }
+# Codegen
+tonic-prost-build = { version = "0.14.1", features = ["cleanup-markdown"], optional = true }
+itertools = { version = "0.14.0", optional = true }
+tempfile = { version = "3.21.0", optional = true }
+reqwest = { version = "0.12.23", optional = true }
 
 [dev-dependencies]
 k8s-openapi = { version = "0.25.0", features = ["v1_33"] }
-
-[build-dependencies]
-tonic-prost-build = { version = "0.14.1", features = ["cleanup-markdown"] }

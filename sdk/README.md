@@ -15,8 +15,16 @@ variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Compile-time dependencies
 
-- [protoc](https://protobuf.dev/installation/) to generate rust structs from the protobuf crossplane schema (sdk).
-- The git submodules needs to be pulled for the sdk-codegen to work (use e.g. `git submodule update --init --recursive`).
+- [protoc](https://protobuf.dev/installation/) for the protocol buffer library `prost-wkt-types` used by the sdk.
+
+## Codegen
+The `src/generated`[src/generated] file contains rust types generated from the
+[official protobuf composite function schema](https://github.com/crossplane/crossplane/blob/main/proto/fn/v1/run_function.proto).
+
+To re-generate it e.g. from the git tag `v2.0.2` use:
+```bash
+cargo run --features codegen codegen v2.0.2
+```
 
 ## Crates
 

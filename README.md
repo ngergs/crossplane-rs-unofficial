@@ -7,9 +7,7 @@ See the [example](example)-subfolder to get started.
 
 ## Compile-time dependencies
 
-To run the protobuf codegen we need [protoc](https://protobuf.dev/installation/) at compile-time.
-
-The git submodules needs to be pulled for protobuf codegen to work (use e.g. `git submodule update --init --recursive`).
+The protocol buffer libraries used by the sdk need [protoc](https://protobuf.dev/installation/) at compile-time.
 
 ## Crates
 
@@ -20,6 +18,3 @@ Till then, you can use it by defining a git dependency in Cargo.
 ```toml
 crossplane-rs-sdk-unofficial = { git = "https://github.com/ngergs/crossplane-rs-unofficial.git" }
 ```
-## License
-
-The license obviously does not apply for the git submodules.
