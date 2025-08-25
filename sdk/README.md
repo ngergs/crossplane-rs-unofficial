@@ -7,6 +7,9 @@ The technical requirements follow from the official [composite functions specifi
 Basically we set up a grpc-server that has to support some custom CLI flags as well as configuration environment
 variables (primarily for crossplane to inject the mTLS-configuration).
 
+## Docs
+You can browse the [rust-docs here](https://ngergs.github.io/crossplane-rs-unofficial/).
+
 ## Most relevant Rust files
 
 - The crossplane files are generated from the protobuf schema and included in [src/lib.rs](src/lib.rs).
