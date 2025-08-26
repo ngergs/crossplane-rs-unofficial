@@ -40,6 +40,7 @@ fn cert_from_dir(
 
 #[async_trait]
 /// Implement this trait to process composite functions, intended to be used with `run_server`.
+/// It is automatically implemented for any synchronous `Fn(RunFunctionRequest) -> Result<RunFunctionResponse,Status>`.
 ///
 /// # Example
 /// ```
@@ -70,6 +71,19 @@ pub trait CompositeFunction: Send + Sync + 'static {
 }
 
 #[async_trait]
+impl<T> CompositeFunction for T
+where
+    T: Send + Sync + 'static + Fn(RunFunctionRequest) -> Result<RunFunctionResponse, Status>,
+{
+    async fn run_function(
+        &self,
+        request: RunFunctionRequest,
+    ) -> Result<RunFunctionResponse, Status> {
+        self(request)
+    }
+}
+
+#[async_trait]
 impl<T> FunctionRunnerService for T
 where
     T: CompositeFunction,
@@ -92,6 +106,29 @@ where
 /// - If referenced tls certificate files are missing or have malformed content.
 ///
 /// # Examples
+/// ## Direct composite function (synchronous)
+/// ```
+/// # use std::error::Error;
+/// # use tonic::Status;
+/// # use crossplane_fn_sdk_rs_unofficial::{run_server, IntoResponseMeta};
+/// # use crossplane_fn_sdk_rs_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+/// fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+///     // Business logic goes here
+///     Ok(RunFunctionResponse {
+///         context: request.context,
+///         meta: Some(request.meta.into_response_meta(60)),
+///         desired: request.desired,
+///         ..Default::default()
+///     })
+/// }
+///
+/// # tokio_test::block_on(async {
+/// #    Ok::<_, Box<dyn Error>>(
+/// run_server(composite_function).await?
+/// #    )
+/// # });
+/// ```
+/// ## Explicit Trait-implementation(asynchronous)
 /// ```
 /// # use std::error::Error;
 /// # use tonic::Status;

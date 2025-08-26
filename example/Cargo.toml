@@ -1,5 +1,5 @@
 [package]
-name = "crossplane-rs-example-unofficial"
+name = "crossplane-fn-sdk-rs-example-unofficial"
 version = "0.1.0"
 edition = "2024"
 description = "Example usage of the `crossplane-fn-sdk-rs-unofficial` library (not published to crates.io yet)"

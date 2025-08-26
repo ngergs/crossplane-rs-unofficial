@@ -4,7 +4,7 @@ use crossplane_fn_sdk_rs_unofficial::crossplane::{
 };
 use crossplane_fn_sdk_rs_unofficial::tonic::Status;
 use crossplane_fn_sdk_rs_unofficial::tracing::info;
-use crossplane_fn_sdk_rs_unofficial::{tonic, CompositeFunction, IntoResponseMeta};
+use crossplane_fn_sdk_rs_unofficial::IntoResponseMeta;
 use crossplane_fn_sdk_rs_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
@@ -13,59 +13,53 @@ use std::collections::{BTreeMap, HashMap};
 use std::io::Error;
 use std::io::ErrorKind::InvalidData;
 
-pub struct ExampleFunction {}
-
 //  The core logic of the composite function goes here
-#[tonic::async_trait]
-impl CompositeFunction for ExampleFunction {
-    async fn run_function(
-        &self,
-        request: RunFunctionRequest,
-    ) -> Result<RunFunctionResponse, Status> {
-        let observed = request.observed.unwrap_or_default();
-        let config = Config::try_from_option_resource(observed.composite)?;
-        log_request(&config);
-        // must pass through any desired state we do not care about
-        let mut desired = request.desired.unwrap_or_default();
-        let observed_configmaps = resources_into_configmaps(observed.resources)?;
+pub(crate) fn composite_function(
+    request: RunFunctionRequest,
+) -> Result<RunFunctionResponse, Status> {
+    let observed = request.observed.unwrap_or_default();
+    let config = Config::try_from_option_resource(observed.composite)?;
+    log_request(&config);
+    // must pass through any desired state we do not care about
+    let mut desired = request.desired.unwrap_or_default();
+    let observed_configmaps = resources_into_configmaps(observed.resources)?;
 
-        // main logic. Go through the template and value sets, template the desired configmaps
-        // and compare with the observed ones to determine whether they are ready.
-        let namespace = config.meta().namespace.clone().ok_or(Error::new(
-            InvalidData,
-            "composite metadata.namespace field not set",
-        ))?;
-        for value_set in config.spec.value_sets {
-            let mut value = config.spec.template.clone();
-            for (k, v) in &value_set.values {
-                value = value.replace(&format!("{{{k}}}"), v);
-            }
-            let configmap = ConfigMap {
-                metadata: ObjectMeta {
-                    name: Some(value_set.name.clone()),
-                    namespace: Some(namespace.clone()),
-                    ..Default::default()
-                },
-                data: Some(BTreeMap::from([("value".to_owned(), value)])),
-                ..Default::default()
-            };
-            let ready = observed_configmaps
-                .get(&value_set.name)
-                .is_some_and(|observed_conf| observed_conf.data == configmap.data)
-                .into();
-
-            let mut desired_configmap = configmap.try_into_resource()?;
-            desired_configmap.set_ready(ready);
-            desired.resources.insert(value_set.name, desired_configmap);
+    // main logic. Go through the template and value sets, template the desired configmaps
+    // and compare with the observed ones to determine whether they are ready.
+    let namespace = config.meta().namespace.clone().ok_or(Error::new(
+        InvalidData,
+        "composite metadata.namespace field not set",
+    ))?;
+    for value_set in config.spec.value_sets {
+        let mut value = config.spec.template.clone();
+        for (k, v) in &value_set.values {
+            value = value.replace(&format!("{{{k}}}"), v);
         }
-
-        Ok(RunFunctionResponse {
-            context: request.context,
-            meta: Some(request.meta.into_response_meta(60)),
-            desired: Some(desired),
+        let configmap = ConfigMap {
+            metadata: ObjectMeta {
+                name: Some(value_set.name.clone()),
+                namespace: Some(namespace.clone()),
+                ..Default::default()
+            },
+            data: Some(BTreeMap::from([("value".to_owned(), value)])),
             ..Default::default()
-        })
+        };
+        let ready = observed_configmaps
+            .get(&value_set.name)
+            .is_some_and(|observed_conf| observed_conf.data == configmap.data)
+            .into();
+
+        let mut desired_configmap = configmap.try_into_resource()?;
+        desired_configmap.set_ready(ready);
+        desired.resources.insert(value_set.name, desired_configmap);
     }
+
+    Ok(RunFunctionResponse {
+        context: request.context,
+        meta: Some(request.meta.into_response_meta(60)),
+        desired: Some(desired),
+        ..Default::default()
+    })
 }
 
 /// Logs the request metadata (`api_version,kind,name,namespace`) of the composite resource on `INFO` level.
@@ -92,7 +86,7 @@ fn resources_into_configmaps(
 #[cfg(test)]
 mod test {
     use crate::composite_resource::{Config, ConfigSpec, ConfigValueSets};
-    use crate::function::{resources_into_configmaps, ExampleFunction};
+    use crate::function::{composite_function, resources_into_configmaps};
     use crossplane_fn_sdk_rs_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
     use crossplane_fn_sdk_rs_unofficial::crossplane::{RequestMeta, RunFunctionRequest, State};
     use crossplane_fn_sdk_rs_unofficial::tonic::Request;
@@ -107,7 +101,7 @@ mod test {
     }
 
     #[tokio::test]
-    async fn composite_function() {
+    async fn composite_function_test() {
         let namespace = "testspace";
         let tcs = vec![TestCase {
             composite: Config {
@@ -138,8 +132,7 @@ mod test {
                 }),
                 ..Default::default()
             };
-            let composite_fn = ExampleFunction {};
-            let rsp = composite_fn
+            let rsp = composite_function
                 .run_function(Request::new(req))
                 .await
                 .unwrap()

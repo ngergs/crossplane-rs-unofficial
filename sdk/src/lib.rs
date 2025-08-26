@@ -4,7 +4,30 @@
 //! This sdk cares about this part and has generated rust types from the published Crossplane protocol buffer schema.
 //! Furthermore, it provides some helper functions to simplify function writing.
 //!
-//! # Example
+//! # Examples
+//! ## Direct composite function (synchronous)
+//! ```
+//! # use std::error::Error;
+//! # use tonic::Status;
+//! # use crossplane_fn_sdk_rs_unofficial::{run_server, IntoResponseMeta};
+//! # use crossplane_fn_sdk_rs_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+//! fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+//!     // Business logic goes here
+//!     Ok(RunFunctionResponse {
+//!         context: request.context,
+//!         meta: Some(request.meta.into_response_meta(60)),
+//!         desired: request.desired,
+//!         ..Default::default()
+//!     })
+//! }
+//!
+//! # tokio_test::block_on(async {
+//! #    Ok::<_, Box<dyn Error>>(
+//! run_server(composite_function).await?
+//! #    )
+//! # });
+//! ```
+//! ## Explicit Trait-implementation(asynchronous)
 //! ```
 //! # use std::error::Error;
 //! # use tonic::Status;
@@ -14,7 +37,7 @@
 //!
 //! #[tonic::async_trait]
 //! impl CompositeFunction for ExampleFunction {
-//!     async fn run_function(&self, request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+//!     async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
 //!         // Business logic goes here
 //!         Ok(RunFunctionResponse {
 //!             context: request.context,

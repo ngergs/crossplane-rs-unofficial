@@ -1,4 +1,4 @@
-use crate::function::ExampleFunction;
+use crate::function::composite_function;
 use crossplane_fn_sdk_rs_unofficial::{run_server, tokio};
 
 pub mod function;
@@ -18,6 +18,6 @@ pub mod composite_resource {
 #[tokio::main]
 /// Starts the grpc server and handles sigterm/sigint for shutdown
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    run_server(ExampleFunction {}).await?;
+    run_server(composite_function).await?;
     Ok(())
 }
