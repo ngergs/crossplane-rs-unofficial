@@ -6,22 +6,17 @@ This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite fu
 
 A very basic way to implement a composite function would be:
 ```rust
-struct ExampleFunction{}
-
-#[tonic::async_trait]
-impl CompositeFunction for ExampleFunction {
-    async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
-        // Business logic goes here
-        Ok(RunFunctionResponse {
-            context: request.context,
-            meta: Some(request.meta.into_response_meta(60)),
-            desired: request.desired,
-            ..Default::default()
-        })
-    }
+fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+    // Business logic goes here
+    Ok(RunFunctionResponse {
+        context: request.context,
+        meta: Some(request.meta.into_response_meta(60)),
+        desired: request.desired,
+        ..Default::default()
+    })
 }
 
-run_server(ExampleFunction{}).await?
+run_server(composite_function).await?
 ```
 
 ### Docs
