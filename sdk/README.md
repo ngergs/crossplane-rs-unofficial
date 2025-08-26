@@ -10,7 +10,7 @@ variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Usage
 
-A very basic way to implement a composite function would be:
+The most direct way to implement a composite function would be:
 ```rust
 fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> { 
     // Business logic goes here

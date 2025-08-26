@@ -5,7 +5,7 @@ for  [crossplane](https://www.crossplane.io/) for Rust.
 
 ## Usage
 
-A very basic way to implement a composite function would be:
+The most direct way to implement a composite function would be:
 ```rust
 fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
     // Business logic goes here
