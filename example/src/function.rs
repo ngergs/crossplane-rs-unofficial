@@ -14,6 +14,8 @@ use std::io::Error;
 use std::io::ErrorKind::InvalidData;
 
 //  The core logic of the composite function goes here
+/// Expects a `Config` xrd as composite resource in the observed state.
+/// Uses the template specified in the `Config` to scaffold `ConfigMaps` into the same namespace.
 pub(crate) fn composite_function(
     request: RunFunctionRequest,
 ) -> Result<RunFunctionResponse, Status> {
