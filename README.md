@@ -2,11 +2,32 @@
 
 This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) sdk and example written in Rust.
 
-## Docs and getting started
+## Usage
 
-The [rust-docs](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/) are a good starting point.
+A very basic way to implement a composite function would be:
+```rust
+struct ExampleFunction{}
 
-See alternatively the [example](example)-subfolder to get started.
+#[tonic::async_trait]
+impl CompositeFunction for ExampleFunction {
+    async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+        // Business logic goes here
+        Ok(RunFunctionResponse {
+            context: request.context,
+            meta: Some(request.meta.into_response_meta(60)),
+            desired: request.desired,
+            ..Default::default()
+        })
+    }
+}
+
+run_server(ExampleFunction{}).await?
+```
+
+### Docs
+For detailed information see the  [full API documentation](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/).
+
+Alternatively, the [example](example)-subfolder is a good way to get started.
 
 ## Compile-time dependencies
 

@@ -7,8 +7,33 @@ The technical requirements follow from the official [composite functions specifi
 Basically we set up a grpc-server that has to support some custom CLI flags as well as configuration environment
 variables (primarily for crossplane to inject the mTLS-configuration).
 
-## Docs
-The [rust-docs](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/) are published at the moment via GitHub Pages.
+
+## Usage
+
+A very basic way to implement a composite function would be:
+```rust
+struct ExampleFunction{}
+
+#[tonic::async_trait]
+impl CompositeFunction for ExampleFunction {
+    async fn run_function(&self,request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
+        // Business logic goes here
+        Ok(RunFunctionResponse {
+            context: request.context,
+            meta: Some(request.meta.into_response_meta(60)),
+            desired: request.desired,
+            ..Default::default()
+        })
+    }
+}
+
+run_server(ExampleFunction{}).await?
+```
+
+### Docs
+For detailed information see the  [full API documentation](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/).
+
+Alternatively, the [../example](../example)-subfolder is a good way to get started.
 
 ## Most relevant Rust files
 
