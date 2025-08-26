@@ -7,16 +7,13 @@ use std::env::args;
 #[cfg(feature = "codegen")]
 use std::fs::OpenOptions;
 #[cfg(feature = "codegen")]
-use std::io::ErrorKind::InvalidData;
-#[cfg(feature = "codegen")]
 use std::io::{Error, Read, Write};
 #[cfg(feature = "codegen")]
 use std::path::Path;
 #[cfg(feature = "codegen")]
-use tempfile::NamedTempFile;
-
+use tempfile::{NamedTempFile, TempDir};
 #[cfg(feature = "codegen")]
-const TARGET_PATH: &str = "./src/generated/apiextensions.r#fn.proto.v1.rs";
+const TARGET_PATH: &str = "./src/generated/crossplane.rs";
 
 #[cfg(feature = "codegen")]
 #[tokio::main]
@@ -36,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     proto_file.write_all(proto_rsp.bytes().await?.as_ref())?;
 
-    let target_path: &Path = Path::new(TARGET_PATH);
+    let target_temp_dir = TempDir::new()?;
     std::fs::create_dir_all("src/generated")?;
     tonic_prost_build::configure()
         // use prost_wkt_types to have serializable structs (used in ../example/src/lib.rs to map types)
@@ -45,7 +42,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build_server(true)
         .build_transport(false)
         .build_client(false)
-        .out_dir(target_path.parent().ok_or(Error::new(InvalidData,"parent directory of output file for generated crossplane types not found. This is an sdk bug."))?)
+        .out_dir(target_temp_dir.path())
         .compile_protos(
             &[proto_file.path()],
             &[proto_file.path().parent().ok_or(
@@ -54,7 +51,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
 
     prepend_to_file(
-        target_path,
+        target_temp_dir
+            .path()
+            .join("apiextensions.r#fn.proto.v1.rs"),
+        TARGET_PATH,
         &format!(
             "// Generated from Crossplane {tag} composite function protobuf schema: https://github.com/crossplane/crossplane/tree/{tag}/proto/fn/v1\n"
         ),
@@ -64,8 +64,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(feature = "codegen")]
 /// Prepends the given test to the provided target path
-fn prepend_to_file(path: &Path, prepend_data: &str) -> Result<(), Error> {
-    let mut file = OpenOptions::new().read(true).open(path)?;
+fn prepend_to_file(
+    src: impl AsRef<Path>,
+    target: impl AsRef<Path>,
+    prepend_data: &str,
+) -> Result<(), Error> {
+    let mut file = OpenOptions::new().read(true).open(src)?;
     let mut data = Vec::new();
     file.read_to_end(&mut data)?;
 
@@ -73,7 +77,7 @@ fn prepend_to_file(path: &Path, prepend_data: &str) -> Result<(), Error> {
         .write(true)
         .truncate(true)
         .create(true)
-        .open(path)?;
+        .open(target)?;
     file.write_all(prepend_data.as_bytes())?;
     file.write_all(&data)?;
     Ok(())

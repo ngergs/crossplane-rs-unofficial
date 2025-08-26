@@ -69,7 +69,7 @@ mod server;
 /// Rust types generated from the [official crossplane protobuf types](https://github.com/crossplane/crossplane/tree/main/proto/fn/v1)
 /// for composite function.
 pub mod crossplane {
-    include!("generated/apiextensions.r#fn.proto.v1.rs");
+    include!("generated/crossplane.rs");
 
     impl From<bool> for Ready {
         fn from(value: bool) -> Self {
