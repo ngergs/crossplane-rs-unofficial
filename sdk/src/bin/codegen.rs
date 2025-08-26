@@ -63,7 +63,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[cfg(feature = "codegen")]
-/// Prepends the given test to the provided target path
+/// Copies the file from src to target (overwriting target) and prepends the provided additional data prior.
 fn prepend_to_file(
     src: impl AsRef<Path>,
     target: impl AsRef<Path>,
