@@ -1,6 +1,7 @@
 # crossplane-fn-sdk-rs-unofficial
 
-This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) sdk and example written in Rust.
+This is an **unofficial** [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) 
+for  [crossplane](https://www.crossplane.io/) for Rust.
 
 ## Usage
 

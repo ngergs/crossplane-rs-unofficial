@@ -1,6 +1,7 @@
 # crossplane-rs-example-unofficial
 
-This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) example written in Rust.
+This is an **unofficial** [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
+example for [crossplane](https://www.crossplane.io/) for Rust.
 
 This example defines a `Config` custom resource which can be used to generate multiple ConfigMaps using a template 
 (it's just a toy example without much practical use). We just picked a Kubernetes resource as output to avoid relying on
