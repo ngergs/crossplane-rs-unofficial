@@ -6,6 +6,7 @@ use std::convert::Into;
 use std::env::args;
 #[cfg(feature = "codegen")]
 use std::fs::OpenOptions;
+#[cfg(feature = "codegen")]
 use std::io::ErrorKind::InvalidData;
 #[cfg(feature = "codegen")]
 use std::io::{Error, Read, Write};
