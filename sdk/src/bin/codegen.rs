@@ -1,11 +1,16 @@
 #[cfg(feature = "codegen")]
 use itertools::Itertools;
 #[cfg(feature = "codegen")]
+use std::convert::Into;
+#[cfg(feature = "codegen")]
 use std::env::args;
 #[cfg(feature = "codegen")]
 use std::fs::OpenOptions;
+use std::io::ErrorKind::InvalidData;
 #[cfg(feature = "codegen")]
 use std::io::{Error, Read, Write};
+#[cfg(feature = "codegen")]
+use std::path::Path;
 #[cfg(feature = "codegen")]
 use tempfile::NamedTempFile;
 
@@ -30,12 +35,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     proto_file.write_all(proto_rsp.bytes().await?.as_ref())?;
 
+    let target_path: &Path = Path::new(TARGET_PATH);
     std::fs::create_dir_all("src/generated")?;
     tonic_prost_build::configure()
         // use prost_wkt_types to have serializable structs (used in ../example/src/lib.rs to map types)
         .extern_path(".google.protobuf.Struct", "::prost_wkt_types::Struct")
+        // we only need server, client is not in scope and transport is hanlded by tonic
         .build_server(true)
-        .out_dir("src/generated")
+        .build_transport(false)
+        .build_client(false)
+        .out_dir(target_path.parent().ok_or(Error::new(InvalidData,"parent directory of output file for generated crossplane types not found. This is an sdk bug."))?)
         .compile_protos(
             &[proto_file.path()],
             &[proto_file.path().parent().ok_or(
@@ -44,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?;
 
     prepend_to_file(
-        TARGET_PATH,
+        target_path,
         &format!(
             "// Generated from Crossplane {tag} composite function protobuf schema: https://github.com/crossplane/crossplane/tree/{tag}/proto/fn/v1\n"
         ),
@@ -54,7 +63,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 #[cfg(feature = "codegen")]
 /// Prepends the given test to the provided target path
-fn prepend_to_file(path: &str, prepend_data: &str) -> Result<(), Error> {
+fn prepend_to_file(path: &Path, prepend_data: &str) -> Result<(), Error> {
     let mut file = OpenOptions::new().read(true).open(path)?;
     let mut data = Vec::new();
     file.read_to_end(&mut data)?;
