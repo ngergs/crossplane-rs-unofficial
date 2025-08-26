@@ -8,8 +8,8 @@
 //! ```
 //! # use std::error::Error;
 //! # use tonic::Status;
-//! # use crossplane_rs_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
-//! # use crossplane_rs_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+//! # use crossplane_fn_sdk_rs_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
+//! # use crossplane_fn_sdk_rs_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 //! struct ExampleFunction{}
 //!
 //! #[tonic::async_trait]

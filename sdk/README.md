@@ -1,4 +1,4 @@
-# crossplane-rs-sdk-unofficial
+# crossplane-fn-sdk-rs-unofficial
 
 This is an **unofficial** [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
 sdk written in Rust.
@@ -8,7 +8,7 @@ Basically we set up a grpc-server that has to support some custom CLI flags as w
 variables (primarily for crossplane to inject the mTLS-configuration).
 
 ## Docs
-The [rust-docs](https://ngergs.github.io/crossplane-rs-unofficial/) are published at the moment via GitHub Pages.
+The [rust-docs](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/) are published at the moment via GitHub Pages.
 
 ## Most relevant Rust files
 
@@ -36,5 +36,5 @@ Please inform me if you are interested in using it and I will push it and add se
 Till then, you can use it by defining a git dependency in Cargo.
 
 ```toml
-crossplane-rs-sdk-unofficial = { git = "https://github.com/ngergs/crossplane-rs-unofficial.git" }
+crossplane-fn-sdk-rs-unofficial = { git = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial.git" }
 ```

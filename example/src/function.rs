@@ -1,9 +1,11 @@
 use crate::composite_resource::Config;
-use crossplane_rs_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
-use crossplane_rs_sdk_unofficial::tonic::Status;
-use crossplane_rs_sdk_unofficial::tracing::info;
-use crossplane_rs_sdk_unofficial::{tonic, CompositeFunction, IntoResponseMeta};
-use crossplane_rs_sdk_unofficial::{TryFromResource, TryIntoResource};
+use crossplane_fn_sdk_rs_unofficial::crossplane::{
+    Resource, RunFunctionRequest, RunFunctionResponse,
+};
+use crossplane_fn_sdk_rs_unofficial::tonic::Status;
+use crossplane_fn_sdk_rs_unofficial::tracing::info;
+use crossplane_fn_sdk_rs_unofficial::{tonic, CompositeFunction, IntoResponseMeta};
+use crossplane_fn_sdk_rs_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
 use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
 use kube::Resource as KubeResource;
@@ -91,10 +93,10 @@ fn resources_into_configmaps(
 mod test {
     use crate::composite_resource::{Config, ConfigSpec, ConfigValueSets};
     use crate::function::{resources_into_configmaps, ExampleFunction};
-    use crossplane_rs_sdk_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
-    use crossplane_rs_sdk_unofficial::crossplane::{RequestMeta, RunFunctionRequest, State};
-    use crossplane_rs_sdk_unofficial::tonic::Request;
-    use crossplane_rs_sdk_unofficial::{tokio, TryIntoResource};
+    use crossplane_fn_sdk_rs_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
+    use crossplane_fn_sdk_rs_unofficial::crossplane::{RequestMeta, RunFunctionRequest, State};
+    use crossplane_fn_sdk_rs_unofficial::tonic::Request;
+    use crossplane_fn_sdk_rs_unofficial::{tokio, TryIntoResource};
     use k8s_openapi::api::core::v1::ConfigMap;
     use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
     use std::collections::{BTreeMap, HashMap};
