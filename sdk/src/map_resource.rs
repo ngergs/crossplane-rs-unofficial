@@ -101,3 +101,35 @@ fn json_value_cast_float_to_i64(val: &mut Value) {
         Value::Null | Value::Bool(_) | Value::String(_) => {}
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::map_resource::json_value_cast_float_to_i64;
+    use serde::de::DeserializeOwned;
+    use serde::Serialize;
+    use std::fmt::Debug;
+
+    fn json_value_cast_roundtrip_check<T>(values: Vec<T>)
+    where
+        T: Serialize + DeserializeOwned + Clone + PartialEq + Debug,
+    {
+        for value in values {
+            let mut json_value = serde_json::to_value(value.clone()).unwrap();
+            json_value_cast_float_to_i64(&mut json_value);
+            let value_roundtrip: T = serde_json::from_value(json_value).unwrap();
+            assert_eq!(value, value_roundtrip);
+        }
+    }
+
+    #[test]
+    /// Verifies that floats can be deserialized after `json_value_cast_float_to_i64`
+    fn json_value_cast_float_roundtrip_test() {
+        json_value_cast_roundtrip_check(vec![3.0, 3.14, 0.0, -3.0, -3.14]);
+    }
+
+    #[test]
+    /// Verifies that ints can be deserialized after `json_value_cast_float_to_i64`
+    fn json_value_cast_int_roundtrip_test() {
+        json_value_cast_roundtrip_check(vec![3, 0, -3]);
+    }
+}
