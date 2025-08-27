@@ -11,7 +11,6 @@ const TARGET_PATH: &str = "./src/generated/crossplane.rs";
 /// Generates `src/generated/crossplane.rs` by fetching the Crossplane protobuf schema for the
 /// provided tag argument and generates Rust types from it.
 /// Errors if feature `codegen` is disabled (default).
-/// Usage example: `cargo run --features codegen codegen v2.0.2`
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let tag = args().skip(2).exactly_one()?;
     let mut proto_file = NamedTempFile::new()?;

@@ -124,7 +124,7 @@ mod tests {
     #[test]
     /// Verifies that floats can be deserialized after `json_value_cast_float_to_i64`
     fn json_value_cast_float_roundtrip_test() {
-        json_value_cast_roundtrip_check(vec![3.0, 3.14, 0.0, -3.0, -3.14]);
+        json_value_cast_roundtrip_check(vec![3.0, 3.24, 0.0, -3.0, -3.24]);
     }
 
     #[test]

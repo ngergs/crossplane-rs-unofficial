@@ -73,10 +73,7 @@ pub mod crossplane {
 
     impl From<bool> for Ready {
         fn from(value: bool) -> Self {
-            match value {
-                true => Ready::True,
-                false => Ready::False,
-            }
+            if value { Ready::True } else { Ready::False }
         }
     }
 }
