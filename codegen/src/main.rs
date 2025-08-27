@@ -4,8 +4,8 @@ use std::fs::OpenOptions;
 use std::io;
 use std::io::{Error, Read, Write};
 use std::path::Path;
-
 use tempfile::{NamedTempFile, TempDir};
+
 const TARGET_PATH: &str = "./src/generated/crossplane.rs";
 
 /// Generates `src/generated/crossplane.rs` by fetching the Crossplane protobuf schema for the
