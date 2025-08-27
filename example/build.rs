@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
-use std::io::Write;
+use std::io::ErrorKind::NotFound;
+use std::io::{Error, Write};
 use std::process::{Command, Stdio};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -23,17 +24,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     "CustomResourceDefinition".clone_into(&mut xrd.kind);
     let xrd_raw = serde_yaml_ng::to_string(&xrd)?;
 
-    let mut kopium_cmd = Command::new("kopium")
+    let kopium_binary_name = "kopium";
+    let mut kopium_cmd = Command::new(kopium_binary_name)
         .args(["--filename", "-"])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
-        .spawn()?;
-    kopium_cmd.stdin.as_mut().ok_or("kopium build subcommands stdin is not available")?
+        .spawn()
+        .map_err(|e| if e.kind() == NotFound {
+            Error::new(NotFound,format!("Binary `{kopium_binary_name}` not available in the PATH. This is a compile-time dependency (not needed at runtime)."))
+        } else { e })?;
+    kopium_cmd
+        .stdin
+        .as_mut()
+        .ok_or("kopium build subcommands stdin is not available")?
         .write_all(xrd_raw.as_bytes())?;
     let kopium_output = kopium_cmd.wait_with_output()?;
     if !kopium_output.status.success() {
-        return Err(format!("kopium build failed {}:", String::from_utf8(kopium_output.stderr)?).into());
+        return Err(format!(
+            "kopium build failed {}:",
+            String::from_utf8(kopium_output.stderr)?
+        )
+        .into());
     }
 
     fs::write("src/generated/xrd.rs", kopium_output.stdout)?;

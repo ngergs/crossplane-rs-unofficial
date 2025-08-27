@@ -27,7 +27,7 @@
 //! #    )
 //! # });
 //! ```
-//! ## Explicit Trait-implementation(asynchronous)
+//! ## Explicit Trait-implementation (asynchronous)
 //! ```
 //! # use std::error::Error;
 //! # use tonic::Status;
