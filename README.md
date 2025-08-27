@@ -3,6 +3,8 @@
 This is an **unofficial** [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) 
 for  [crossplane](https://www.crossplane.io/) for Rust.
 
+This is a v0-version that is not yet published to crates.io. Breaking changes are common.
+
 ## Usage
 
 The most direct way to implement a composite function would be:
