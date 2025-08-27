@@ -89,10 +89,8 @@ fn resources_into_configmaps(
 mod test {
     use crate::composite_resource::{Config, ConfigSpec, ConfigValueSets};
     use crate::function::{composite_function, resources_into_configmaps};
-    use crossplane_fn_sdk_rs_unofficial::crossplane::function_runner_service_server::FunctionRunnerService;
     use crossplane_fn_sdk_rs_unofficial::crossplane::{RequestMeta, RunFunctionRequest, State};
-    use crossplane_fn_sdk_rs_unofficial::tonic::Request;
-    use crossplane_fn_sdk_rs_unofficial::{tokio, TryIntoResource};
+    use crossplane_fn_sdk_rs_unofficial::{tokio, CompositeFunction, TryIntoResource};
     use k8s_openapi::api::core::v1::ConfigMap;
     use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
     use std::collections::{BTreeMap, HashMap};
@@ -134,11 +132,7 @@ mod test {
                 }),
                 ..Default::default()
             };
-            let rsp = composite_function
-                .run_function(Request::new(req))
-                .await
-                .unwrap()
-                .into_inner();
+            let rsp = composite_function.run_function(req).await.unwrap();
             let desired =
                 resources_into_configmaps(rsp.desired.unwrap_or_default().resources).unwrap();
             assert_eq!(tc.expected_desired, desired);
