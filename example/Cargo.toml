@@ -6,6 +6,7 @@ description = "Example usage of the `crossplane-fn-sdk-rs-unofficial` library (n
 repository = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial"
 license = "MIT"
 readme = "README.md"
+publish = false
 
 [lints.clippy]
 pedantic = "warn"
