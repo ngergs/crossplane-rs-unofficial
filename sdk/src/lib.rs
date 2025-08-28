@@ -73,12 +73,18 @@ mod server;
 
 /// Rust types generated from the [official crossplane protobuf types](https://github.com/crossplane/crossplane/tree/main/proto/fn/v1)
 /// for composite function.
+#[allow(warnings)]
+#[allow(clippy)]
+#[allow(unknown_lints)]
 pub mod crossplane {
     include!("generated/crossplane.rs");
 
     impl From<bool> for Ready {
         fn from(value: bool) -> Self {
-            if value { Ready::True } else { Ready::False }
+            match value {
+                true => Ready::True,
+                _ => Ready::False,
+            }
         }
     }
 }

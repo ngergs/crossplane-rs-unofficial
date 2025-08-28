@@ -7,13 +7,13 @@ repository = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial"
 license = "MIT"
 readme = "README.md"
 
+[lints.clippy]
+pedantic = "warn"
+
 [features]
 default = []
 # Adds blanked implementation for `TryFromResource` and `TryIntoResource` for Kubernetes objects.
 k8s-openapi = ["dep:k8s-openapi"]
-
-[lints.clippy]
-pedantic = "warn"
 
 [dependencies]
 # IO
