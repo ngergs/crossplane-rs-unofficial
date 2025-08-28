@@ -5,6 +5,10 @@
 //! This sdk cares about this part and has generated rust types from the published Crossplane protocol buffer schema.
 //! Furthermore, it provides some helper functions to simplify function writing.
 //!
+//! The central functionality besides some type mapping helper traits is provided via the [`run_server`]-function
+//! which will start a gRPC server that handles the composite function requests with the business logic provided by
+//! the sdk-user.
+//!
 //! # Examples
 //! ## Direct composite function (synchronous)
 //! ```

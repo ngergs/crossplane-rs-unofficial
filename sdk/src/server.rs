@@ -39,7 +39,7 @@ fn cert_from_dir(
 }
 
 #[async_trait]
-/// Implement this trait to process composite functions, intended to be used with `run_server`.
+/// Implement this trait to process composite functions, intended to be used with [`run_server`].
 /// It is automatically implemented for any synchronous `[Fn](RunFunctionRequest) -> Result<RunFunctionResponse,Status>`.
 ///
 /// # Example
@@ -97,7 +97,7 @@ where
 }
 
 /// Reads the cli arguments, configures and starts the grpc server and handles sigterm/sigint for shutdown.
-/// Calls the provided `FunctionRunnerService`-impl for the core business logic of the composite function.
+/// Calls the provided [`CompositeFunction`]-impl for the core business logic of the composite function.
 /// The cli follows the [official composite function spec](https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md).
 ///
 /// # Errors
