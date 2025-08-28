@@ -3,7 +3,7 @@
 This is an **unofficial** Rust [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/) 
 for  [crossplane](https://www.crossplane.io/).
 
-This is a v0-version that is not yet published to crates.io. Breaking changes are common.
+This is a v0 version that is not yet published to crates.io. Breaking changes are common.
 
 ## Usage
 
