@@ -1,4 +1,5 @@
-//! A Rust sdk for [crossplane](https://www.crossplane.io/) [composite function](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/).
+//! This is an **unofficial** Rust [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
+//! for [crossplane](https://www.crossplane.io/).
 //!
 //! Crossplane composite functions are implemented as gRPC server that have to handle specific cli args to setup mtls.
 //! This sdk cares about this part and has generated rust types from the published Crossplane protocol buffer schema.

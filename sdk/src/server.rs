@@ -40,7 +40,7 @@ fn cert_from_dir(
 
 #[async_trait]
 /// Implement this trait to process composite functions, intended to be used with `run_server`.
-/// It is automatically implemented for any synchronous `Fn(RunFunctionRequest) -> Result<RunFunctionResponse,Status>`.
+/// It is automatically implemented for any synchronous `[Fn](RunFunctionRequest) -> Result<RunFunctionResponse,Status>`.
 ///
 /// # Example
 /// ```
