@@ -9,6 +9,9 @@
 //! which will start a gRPC server that handles the composite function requests with the business logic provided by
 //! the sdk-user.
 //!
+//! # Compile-time dependencies
+//! The protocol buffer library [prost-wkt-types](https://docs.rs/prost-wkt-types/latest/prost_wkt_types) used by the sdk requires [protoc](https://protobuf.dev/installation/) at compile-time.
+//!
 //! # Examples
 //! ## Direct composite function (synchronous)
 //! ```

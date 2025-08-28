@@ -29,7 +29,7 @@ Alternatively, the [example](example)-subfolder is a good way to get started.
 
 ## Compile-time dependencies
 
-The protocol buffer libraries used by the sdk need [protoc](https://protobuf.dev/installation/) at compile-time.
+The protocol buffer library [prost-wkt-types](https://docs.rs/prost-wkt-types/latest/prost_wkt_types) used by the sdk requires [protoc](https://protobuf.dev/installation/) at compile-time.
 
 ## Crates
 
