@@ -48,6 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Other
 
+- docs typo
+- readme
+- update sdk changelog
 - drop -rs semi-suffix from crate name
 - adjust compile time dependency docs
 - prepare release
