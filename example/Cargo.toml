@@ -12,7 +12,7 @@ publish = false
 pedantic = "warn"
 
 [dependencies]
-crossplane-fn-sdk-unofficial = { path = "../sdk", features = ["k8s-openapi"] }
+crossplane-fn-sdk-unofficial = { version = "0.1.0", features = ["k8s-openapi"] }
 k8s-openapi = { version = "0.25.0", features = ["v1_32"] }
 # Needed for mapping from crossplane resources (protobuf json types) to typed rust types
 serde = "1.0.219"
