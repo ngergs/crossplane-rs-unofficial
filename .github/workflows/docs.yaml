@@ -27,16 +27,14 @@ jobs:
       - name: Build docs
         run: |-
           sudo apt-get install -y protobuf-compiler
-          cd sdk
           cargo test
-          cargo doc --no-deps
-          cd ..
+          cargo doc --manifest-path=sdk/Cargo.toml --no-deps
           rm target/doc/.lock
           # rust docs have the entry-point one level below the docs root, but relevant styling is in the root and has to be shipped as well
           echo -n '<meta http-equiv="refresh" content="0;url=crossplane_fn_sdk_rs_unofficial/index.html">' > target/doc/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
-          path: sdk/target/doc
+          path: target/doc
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
