@@ -2,6 +2,9 @@
 resolver = "3"
 members = ["codegen", "example", "sdk"]
 
+[patch.crates-io]
+crossplane-fn-sdk-unofficial = { path = "sdk" }
+
 # see https://github.com/johnthagen/min-sized-rust
 [profile.release]
 strip = true
