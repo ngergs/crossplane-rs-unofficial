@@ -12,7 +12,7 @@ pedantic = "warn"
 
 [features]
 default = []
-# Adds blanked implementation for `TryFromResource` and `TryIntoResource` for Kubernetes objects.
+# Adds blanket implementation for `TryFromResource` and `TryIntoResource` for Kubernetes objects.
 k8s-openapi = ["dep:k8s-openapi"]
 
 [dependencies]
