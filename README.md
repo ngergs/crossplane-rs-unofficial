@@ -23,7 +23,7 @@ fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse
     })
 }
 
-run_server(composite_function).await?
+run_server(Args::pase(), composite_function).await?
 ```
 
 ### Docs

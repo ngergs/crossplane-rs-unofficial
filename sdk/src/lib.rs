@@ -16,8 +16,9 @@
 //! ## Direct composite function (synchronous)
 //! ```
 //! # use std::error::Error;
+//! # use clap::Parser;
 //! # use tonic::Status;
-//! # use crossplane_fn_sdk_unofficial::{run_server, IntoResponseMeta};
+//! # use crossplane_fn_sdk_unofficial::{run_server, Args, IntoResponseMeta};
 //! # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 //! fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
 //!     // Business logic goes here
@@ -31,15 +32,16 @@
 //!
 //! # tokio_test::block_on(async {
 //! #    Ok::<_, Box<dyn Error>>(
-//! run_server(composite_function).await?
+//! run_server(Args::parse(), composite_function).await?
 //! #    )
 //! # });
 //! ```
 //! ## Explicit Trait-implementation (asynchronous)
 //! ```
 //! # use std::error::Error;
+//! # use clap::Parser;
 //! # use tonic::Status;
-//! # use crossplane_fn_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
+//! # use crossplane_fn_sdk_unofficial::{run_server, Args, CompositeFunction, IntoResponseMeta};
 //! # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 //! struct ExampleFunction{}
 //!
@@ -58,17 +60,17 @@
 //!
 //! # tokio_test::block_on(async {
 //! #    Ok::<_, Box<dyn Error>>(
-//! run_server(ExampleFunction{}).await?
+//! run_server(Args::parse(), ExampleFunction{}).await?
 //! #    )
 //! # });
 //! ```
+pub use clap::Parser;
 pub use tokio;
 pub use tonic;
-pub use tracing;
 
 pub use map_meta::IntoResponseMeta;
 pub use map_resource::{TryFromResource, TryIntoResource};
-pub use server::{run_server, CompositeFunction};
+pub use server::{run_server, Args, CompositeFunction};
 mod error;
 mod map_meta;
 mod map_resource;

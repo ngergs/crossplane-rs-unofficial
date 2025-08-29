@@ -7,25 +7,24 @@ use std::path::Path;
 use tokio::signal::unix::{signal, SignalKind};
 use tonic::transport::{Certificate, Identity, Server, ServerTlsConfig};
 use tonic::{async_trait, Request, Response, Status};
-use tracing::Level;
 
 /// CLI arguments as required by the spec, <https://github.com/crossplane/crossplane/blob/main/contributing/specifications/functions.md>
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
+pub struct Args {
     /// To enable debug logging
     #[arg(long, env = "DEBUG", default_value_t = false)]
     #[clap(action)]
-    debug: bool,
+    pub debug: bool,
 
     /// For local debugging, skips mtls setup!
     #[arg(long, env = "INSECURE", default_value_t = false)]
     #[clap(action)]
-    insecure: bool,
+    pub insecure: bool,
 
     /// Directory containing mTLS certs (tls.key and tls.crt) and a CA (ca.crt) for client verification
     #[arg(long, env = "TLS_SERVER_CERTS_DIR")]
-    tls_certs_dir: Option<String>,
+    pub tls_certs_dir: Option<String>,
 }
 
 /// Reads a TLS certificate or key from a directory  with the given file name
@@ -109,8 +108,9 @@ where
 /// ## Direct composite function (synchronous)
 /// ```
 /// # use std::error::Error;
+/// # use clap::Parser;
 /// # use tonic::Status;
-/// # use crossplane_fn_sdk_unofficial::{run_server, IntoResponseMeta};
+/// # use crossplane_fn_sdk_unofficial::{run_server, Args, IntoResponseMeta};
 /// # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 /// fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
 ///     // Business logic goes here
@@ -124,15 +124,16 @@ where
 ///
 /// # tokio_test::block_on(async {
 /// #    Ok::<_, Box<dyn Error>>(
-/// run_server(composite_function).await?
+/// run_server(Args::parse(), composite_function).await?
 /// #    )
 /// # });
 /// ```
 /// ## Explicit Trait-implementation (asynchronous)
 /// ```
 /// # use std::error::Error;
+/// # use clap::Parser;
 /// # use tonic::Status;
-/// # use crossplane_fn_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
+/// # use crossplane_fn_sdk_unofficial::{run_server, Args, CompositeFunction, IntoResponseMeta};
 /// # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 /// struct ExampleFunction{}
 ///
@@ -151,21 +152,14 @@ where
 ///
 /// # tokio_test::block_on(async {
 /// #    Ok::<_, Box<dyn Error>>(
-/// run_server(ExampleFunction{}).await?
+/// run_server(Args::parse(), ExampleFunction{}).await?
 /// #    )
 /// # });
 /// ```
-pub async fn run_server(f: impl CompositeFunction) -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-
-    let mut log_config = tracing_subscriber::fmt().json();
-    log_config = if args.debug {
-        log_config.with_max_level(Level::DEBUG)
-    } else {
-        log_config.with_max_level(Level::INFO)
-    };
-    log_config.init();
-
+pub async fn run_server(
+    args: Args,
+    f: impl CompositeFunction,
+) -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::]:9443".parse()?;
     let mut srv = Server::builder();
     if !args.insecure {

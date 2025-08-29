@@ -372,6 +372,8 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml_ng",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -389,8 +391,6 @@ dependencies = [
  "tokio-test",
  "tonic",
  "tonic-prost",
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]

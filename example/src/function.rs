@@ -1,7 +1,6 @@
 use crate::composite_resource::Config;
 use crossplane_fn_sdk_unofficial::crossplane::{Resource, RunFunctionRequest, RunFunctionResponse};
 use crossplane_fn_sdk_unofficial::tonic::Status;
-use crossplane_fn_sdk_unofficial::tracing::info;
 use crossplane_fn_sdk_unofficial::IntoResponseMeta;
 use crossplane_fn_sdk_unofficial::{TryFromResource, TryIntoResource};
 use k8s_openapi::api::core::v1::ConfigMap;
@@ -10,6 +9,7 @@ use kube::Resource as KubeResource;
 use std::collections::{BTreeMap, HashMap};
 use std::io::Error;
 use std::io::ErrorKind::InvalidData;
+use tracing::info;
 
 //  The core logic of the composite function goes here
 /// Expects a `Config` xrd as composite resource in the observed state.

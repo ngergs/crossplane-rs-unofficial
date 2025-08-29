@@ -1,5 +1,6 @@
 use crate::function::composite_function;
-use crossplane_fn_sdk_unofficial::{run_server, tokio};
+use crossplane_fn_sdk_unofficial::{run_server, tokio, Args, Parser};
+use tracing::Level;
 
 pub mod function;
 
@@ -15,9 +16,21 @@ pub mod composite_resource {
     impl TryIntoResource for Config {}
 }
 
+fn configure_logging(args: &Args) {
+    let mut log_config = tracing_subscriber::fmt().json();
+    log_config = if args.debug {
+        log_config.with_max_level(Level::DEBUG)
+    } else {
+        log_config.with_max_level(Level::INFO)
+    };
+    log_config.init();
+}
+
 #[tokio::main]
 /// Starts the grpc server and handles sigterm/sigint for shutdown
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    run_server(composite_function).await?;
+    let args = Args::parse();
+    configure_logging(&args);
+    run_server(args, composite_function).await?;
     Ok(())
 }
