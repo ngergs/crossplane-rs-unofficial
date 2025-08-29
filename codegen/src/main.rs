@@ -6,9 +6,9 @@ use std::io::{Error, Read, Write};
 use std::path::Path;
 use tempfile::{NamedTempFile, TempDir};
 
-const TARGET_PATH: &str = "./src/generated/crossplane.rs";
+const TARGET_PATH: &str = "crossplane.rs";
 
-/// Generates `src/generated/crossplane.rs` by fetching the Crossplane protobuf schema for the
+/// Generates `crossplane.rs` by fetching the Crossplane protobuf schema for the
 /// provided tag argument and generates Rust types from it.
 /// Errors if feature `codegen` is disabled (default).
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -28,7 +28,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     io::copy(&mut proto_rsp.into_body().as_reader(), &mut proto_file)?;
 
     let target_temp_dir = TempDir::new()?;
-    std::fs::create_dir_all("src/generated")?;
     tonic_prost_build::configure()
         // use prost_wkt_types to have serializable structs (used in ../example/src/lib.rs to map types)
         .extern_path(".google.protobuf.Struct", "::prost_wkt_types::Struct")

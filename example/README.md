@@ -26,10 +26,6 @@ spec:
         timeOfDay: evening
 ```
 
-## Most relevant Rust files
-
-- The core logic of the composite function can be found in [src/function.rs](src/function.rs).
-
 ## Compile-time dependencies
 
 - [protoc](https://protobuf.dev/installation/) for the protocol buffer libraries used by the sdk.
