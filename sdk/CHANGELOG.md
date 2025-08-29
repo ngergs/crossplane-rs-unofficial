@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0](https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial/releases/tag/crossplane-fn-sdk-rs-unofficial-v0.1.0) - 2025-08-28
+## [0.1.0](https://github.com/ngergs/crossplane-fn-sdk-unofficial/releases/tag/crossplane-fn-sdk-unofficial-v0.1.0) - 2025-08-28
 
 ### Added
 

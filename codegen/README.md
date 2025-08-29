@@ -1,4 +1,4 @@
-# crossplane-fn-sdk-rs-unofficial-codegen
+# crossplane-fn-sdk-unofficial-codegen
 
 Internal crate used to (re-)generate the [Rust types for the sdk](../sdk/src/generated/crossplane.rs)
 from the Crossplane [official protobuf composite function schema](https://github.com/crossplane/crossplane/blob/main/proto/fn/v1/run_function.proto).

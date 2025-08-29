@@ -363,10 +363,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossplane-fn-sdk-rs-example-unofficial"
+name = "crossplane-fn-sdk-example-unofficial"
 version = "0.1.0"
 dependencies = [
- "crossplane-fn-sdk-rs-unofficial",
+ "crossplane-fn-sdk-unofficial",
  "k8s-openapi",
  "kube",
  "serde",
@@ -375,7 +375,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossplane-fn-sdk-rs-unofficial"
+name = "crossplane-fn-sdk-unofficial"
 version = "0.1.0"
 dependencies = [
  "clap",
@@ -394,7 +394,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossplane-fn-sdk-rs-unofficial-codegen"
+name = "crossplane-fn-sdk-unofficial-codegen"
 version = "0.1.0"
 dependencies = [
  "itertools 0.14.0",

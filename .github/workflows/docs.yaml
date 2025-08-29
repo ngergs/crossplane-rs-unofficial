@@ -31,7 +31,7 @@ jobs:
           cargo doc --manifest-path=sdk/Cargo.toml --no-deps
           rm target/doc/.lock
           # rust docs have the entry-point one level below the docs root, but relevant styling is in the root and has to be shipped as well
-          echo -n '<meta http-equiv="refresh" content="0;url=crossplane_fn_sdk_rs_unofficial/index.html">' > target/doc/index.html
+          echo -n '<meta http-equiv="refresh" content="0;url=crossplane_fn_sdk_unofficial/index.html">' > target/doc/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

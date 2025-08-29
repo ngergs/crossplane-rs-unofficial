@@ -1,4 +1,4 @@
-# crossplane-fn-sdk-rs-unofficial
+# crossplane-fn-sdk-unofficial
 
 This is an **unofficial** Rust [composite function sdk](https://docs.crossplane.io/latest/guides/write-a-composition-function-in-go/)
 for  [crossplane](https://www.crossplane.io/).
@@ -26,7 +26,7 @@ run_server(composite_function).await?
 ```
 
 ### Docs
-For detailed information see the  [full API documentation](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/).
+For detailed information see the  [full API documentation](https://ngergs.github.io/crossplane-fn-sdk-unofficial/).
 
 Alternatively, the [../example](../example)-subfolder is a good way to get started.
 
@@ -56,5 +56,5 @@ Please inform me if you are interested in using it and I will push it and add se
 Till then, you can use it by defining a git dependency in Cargo.
 
 ```toml
-crossplane-fn-sdk-rs-unofficial = { git = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial.git" }
+crossplane-fn-sdk-unofficial = { git = "https://github.com/ngergs/crossplane-fn-sdk-unofficial.git" }
 ```

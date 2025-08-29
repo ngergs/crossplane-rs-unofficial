@@ -1,9 +1,9 @@
 [package]
-name = "crossplane-fn-sdk-rs-unofficial-codegen"
+name = "crossplane-fn-sdk-unofficial-codegen"
 version = "0.1.0"
 edition = "2024"
 description = "Tooling to generate Rust types from the Crossplane protobuf schema. For internal use in this sdk. Won't be published as a crate."
-repository = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial"
+repository = "https://github.com/ngergs/crossplane-fn-sdk-unofficial"
 license = "MIT"
 readme = "README.md"
 publish = false

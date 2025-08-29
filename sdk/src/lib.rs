@@ -17,8 +17,8 @@
 //! ```
 //! # use std::error::Error;
 //! # use tonic::Status;
-//! # use crossplane_fn_sdk_rs_unofficial::{run_server, IntoResponseMeta};
-//! # use crossplane_fn_sdk_rs_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+//! # use crossplane_fn_sdk_unofficial::{run_server, IntoResponseMeta};
+//! # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 //! fn composite_function(request: RunFunctionRequest) -> Result<RunFunctionResponse,Status> {
 //!     // Business logic goes here
 //!     Ok(RunFunctionResponse {
@@ -39,8 +39,8 @@
 //! ```
 //! # use std::error::Error;
 //! # use tonic::Status;
-//! # use crossplane_fn_sdk_rs_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
-//! # use crossplane_fn_sdk_rs_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
+//! # use crossplane_fn_sdk_unofficial::{run_server, CompositeFunction, IntoResponseMeta};
+//! # use crossplane_fn_sdk_unofficial::crossplane::{RunFunctionRequest, RunFunctionResponse};
 //! struct ExampleFunction{}
 //!
 //! #[tonic::async_trait]
