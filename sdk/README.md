@@ -30,7 +30,7 @@ run_server(Args::parse(), composite_function).await?
 ```
 
 ### Docs
-For detailed information see the [full API documentation](https://docs.rs/crossplane-fn-sdk-unofficial/0.1.0/crossplane_fn_sdk_unofficial/).
+For detailed information see the [full API documentation](https://docs.rs/crossplane-fn-sdk-unofficial/latest/crossplane_fn_sdk_unofficial/index.html).
 
 Alternatively, the [examples](https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial/tree/main/example) are a good way to get started.
 

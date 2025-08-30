@@ -27,7 +27,7 @@ run_server(Args::pase(), composite_function).await?
 ```
 
 ### Docs
-For detailed information see the [full API documentation](https://docs.rs/crossplane-fn-sdk-unofficial/0.1.0/crossplane_fn_sdk_unofficial/).
+For detailed information see the [full API documentation](https://docs.rs/crossplane-fn-sdk-unofficial/latest/crossplane_fn_sdk_unofficial/index.html).
 
 The API documentation for the (potentially unpublished) main branch can be found [here](https://ngergs.github.io/crossplane-fn-sdk-rs-unofficial/).
 
