@@ -1,6 +1,6 @@
 [package]
 name = "crossplane-fn-sdk-unofficial"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2024"
 description = "A sdk to write Crossplane composite functions in Rust. Technically composite functions are basically gRPC server."
 repository = "https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial"

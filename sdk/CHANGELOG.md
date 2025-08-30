@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.2](https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial/compare/v0.2.1...v0.2.2) - 2025-08-30
+
+### Other
+
+- link to current version in docs.rs readme reference
+- sdk readme title (used for crates.io)
+
 ## [0.2.1](https://github.com/ngergs/crossplane-fn-sdk-rs-unofficial/compare/v0.2.0...v0.2.1) - 2025-08-29
 
 ### Fixed
